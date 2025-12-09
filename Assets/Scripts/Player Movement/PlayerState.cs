@@ -7,7 +7,7 @@ public abstract class PlayerState : State
     protected PlayerStats stats => PlayerStats.Instance;
     protected Rigidbody2D rb;
     protected Animator animator;
-    protected CapsuleCollider2D col;
+    protected Collider2D col;
     protected PlayerController controller;
     protected FrameInput frameInput;
 
@@ -16,7 +16,7 @@ public abstract class PlayerState : State
         controller = PlayerController.Instance;
         rb = controller.rb;
         animator = controller.animator;
-        col = controller.col as CapsuleCollider2D;
+        col = controller.col;
         GatherInput();
     }
     public override void OnUpdate(StateMachineRunner runner)

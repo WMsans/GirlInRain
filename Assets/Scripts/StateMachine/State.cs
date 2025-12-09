@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class State : ScriptableObject
+public abstract class State : MonoBehaviour
 {
     public virtual void OnEnter(StateMachineRunner runner){}
     public virtual void OnExit(StateMachineRunner runner){}

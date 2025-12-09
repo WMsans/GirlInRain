@@ -80,13 +80,13 @@ public class PlayerNormalState : PlayerState
         Physics2D.queriesStartInColliders = false;
 
         // Ground and Ceiling
-        bool groundHit = Physics2D.CapsuleCast(col.bounds.center, col.size, col.direction, 0, Vector2.down, stats.grounderDistance, stats.groundLayer);
+        bool groundHit = Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0, Vector2.down, stats.grounderDistance, stats.groundLayer);
         
         float horizontalCheckOffset = col.bounds.extents.x + 0.02f; // Small offset
         Vector2 raycastOriginLeft = new Vector2(col.bounds.center.x - horizontalCheckOffset, col.bounds.center.y);
         Vector2 raycastOriginRight = new Vector2(col.bounds.center.x + horizontalCheckOffset, col.bounds.center.y);
-        bool wallHitLeft = Physics2D.CapsuleCast(col.bounds.center, col.size, col.direction, 0, Vector2.left, stats.grounderDistance, stats.groundLayer);
-        bool wallHitRight = Physics2D.CapsuleCast(col.bounds.center, col.size, col.direction, 0, Vector2.right, stats.grounderDistance, stats.groundLayer);
+        bool wallHitLeft = Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0, Vector2.left, stats.grounderDistance, stats.groundLayer);
+        bool wallHitRight = Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0, Vector2.right, stats.grounderDistance, stats.groundLayer);
         
         // Determine wall state
         _isAgainstWall = (wallHitLeft || wallHitRight) && !groundHit; // Can't be against wall if grounded
@@ -223,8 +223,9 @@ public class PlayerNormalState : PlayerState
 
         if (lockoutActive)
         {
+            Debug.Log(Mathf.Approximately(Mathf.Sign(horizontalInput), _lastWallJumpDirection));
             // If lockout is active AND input is towards the wall we jumped from, ignore input
-            if (Mathf.Approximately(Mathf.Sign(horizontalInput), _lastWallJumpDirection))
+            if (!Mathf.Approximately(Mathf.Sign(horizontalInput), _lastWallJumpDirection))
             {
                 horizontalInput = 0; // Treat input as neutral regarding wall direction
                 // Optional: Could allow input *away* from the wall during lockout if desired,

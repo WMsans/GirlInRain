@@ -6,12 +6,6 @@ public class PlayerStats : ScriptableObjectSingleton<PlayerStats>
 {
     [FormerlySerializedAs("GroundLayer")] [Header("LAYERS")] [Tooltip("Set this to the layer your player is collided on")]
     public LayerMask groundLayer;
-    
-    [Tooltip("Set this to the layer your walls are on")]
-    public LayerMask wallLayer; // Set this to the layer your walls are on
-    
-    [Tooltip("Set this to the layer your water is on")]
-    public LayerMask waterLayerMask;
 
     [FormerlySerializedAs("MaxSpeed")] [Header("MOVEMENT")] [Tooltip("The top horizontal movement speed")]
     public float maxSpeed = 14;
@@ -60,12 +54,4 @@ public class PlayerStats : ScriptableObjectSingleton<PlayerStats>
     public float wallJumpForceHorizontalBase = 10f; // Horizontal force when jumping with no directional input
     public float wallJumpForceHorizontalWithInput = 12f; // Horizontal force when jumping with directional input (towards or away)
     public float wallJumpInputLeeway = 0.1f; // Small time window to allow input slightly before/after jump press for bonus force
-    
-    [Header("Dash-Related, Abandoned")]
-    public int maxAirDashes = 1;
-    public float dashCooldown = 0.25f;
-    public float anchorDashDetectionAngle = 45f;
-    public float anchorDashMaxDistance = 10f;
-    public float anchorDashCooldown = 0.8f;
-    public float anchorDashBufferTime = 0.2f;
 }
