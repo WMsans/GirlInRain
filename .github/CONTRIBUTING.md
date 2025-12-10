@@ -10,6 +10,7 @@ If you are reporting a bug, please ensure you use the **Bug Report Template**.
 ***Note: This project is under heavy construction, so bug issues may not be fixed until late cycle of development. 
 ## 3. Feature Requests
 We welcome ideas! Use the **Feature Request Template**.
+- Before you add features, you should discuss it in the [Discussion](https://github.com/WMsans/GirlInRain/discussions) portion. 
 - Focus on features that align with the core gameplay loop or current development roadmap.
 - Be specific about how it should work.
 ## 4. Art & Assets
