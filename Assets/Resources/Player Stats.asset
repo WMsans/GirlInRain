@@ -16,12 +16,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   maxSpeed: 6
-  acceleration: 50
+  acceleration: 70
   groundDeceleration: 125
-  airDeceleration: 60
+  airDeceleration: 100
   groundingForce: -1
   grounderDistance: 0.05
-  jumpPower: 11
+  jumpPower: 14
   maxFallSpeed: 12.5
   fallAcceleration: 64
   jumpEndEarlyGravityModifier: 3
@@ -30,8 +30,8 @@ MonoBehaviour:
   wallCheckDistance: 0.1
   wallSlideSpeed: 2.5
   wallJumpCoyoteTime: 0.15
-  wallJumpInputLockoutDuration: 0.05
-  wallJumpForceVertical: 7.5
-  wallJumpForceHorizontalBase: 5
-  wallJumpForceHorizontalWithInput: 10
+  wallJumpInputLockoutDuration: 0.15
+  wallJumpForceVertical: 12
+  wallJumpForceHorizontalBase: 10
+  wallJumpForceHorizontalWithInput: 15
   wallJumpInputLeeway: 0.1
