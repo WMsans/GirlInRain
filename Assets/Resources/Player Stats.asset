@@ -21,17 +21,17 @@ MonoBehaviour:
   airDeceleration: 100
   groundingForce: -1
   grounderDistance: 0.05
-  jumpPower: 14
-  maxFallSpeed: 12.5
-  fallAcceleration: 64
+  jumpPower: 24
+  maxFallSpeed: 15
+  fallAcceleration: 100
   jumpEndEarlyGravityModifier: 3
   coyoteTime: 0.15
   jumpBuffer: 0.2
   wallCheckDistance: 0.1
-  wallSlideSpeed: 2.5
+  wallSlideSpeed: 7
   wallJumpCoyoteTime: 0.15
   wallJumpInputLockoutDuration: 0.15
-  wallJumpForceVertical: 12
-  wallJumpForceHorizontalBase: 10
-  wallJumpForceHorizontalWithInput: 15
+  wallJumpForceVertical: 24
+  wallJumpForceHorizontalBase: 14
+  wallJumpForceHorizontalWithInput: 18
   wallJumpInputLeeway: 0.1

@@ -1,0 +1,33 @@
+{
+  "Rects": null,
+  "Def": {
+    "__cHei": 8,
+    "__cWid": 7,
+    "cachedPixelData": {
+      "opaqueTiles": "11111111111111111111111111111111111111111111111111111111",
+      "averageColors": "f589f589f589f478f588f478f478f589f589f589f589f589f589f588f589f589f589f589f589f589f478f589f589f589f589f589f589f478f589f589f589f589f589f589f589f589f589f589f589f588f588f589f589f589f589f589f588f588f589f589f589f589f589f589f589f589"
+    },
+    "customData": [
+
+    ],
+    "embedAtlas": null,
+    "enumTags": [
+
+    ],
+    "identifier": "Tileset_template_1",
+    "padding": 0,
+    "pxHei": 128,
+    "pxWid": 112,
+    "relPath": "PTST/tileset template 1.png",
+    "savedSelections": [
+
+    ],
+    "spacing": 0,
+    "tags": [
+
+    ],
+    "tagsSourceEnumUid": null,
+    "tileGridSize": 16,
+    "uid": 2
+  }
+}
