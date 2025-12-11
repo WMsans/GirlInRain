@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class RoomCameraLimit : MonoBehaviour
+public class RoomCameraLimitTrigger : MonoBehaviour
 {
     // Public getter for the collider bounds
     public Collider2D RoomCollider { get; private set; }

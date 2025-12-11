@@ -16,7 +16,7 @@ public class RoomCameraController : MonoBehaviour
     [Tooltip("How fast the camera follows the player within a room")]
     [SerializeField] private float followSpeed = 10f;
 
-    private RoomCameraLimit _currentRoomCameraLimit;
+    private RoomCameraLimitTrigger _currentRoomCameraLimitTrigger;
     private Camera _cam;
     private float _camHeight;
     private float _camWidth;
@@ -40,14 +40,14 @@ public class RoomCameraController : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (player == null || _currentRoomCameraLimit == null) return;
+        if (player == null || _currentRoomCameraLimitTrigger == null) return;
 
         // Calculate where the camera WANTS to be (centered on player)
         Vector3 targetPos = player.position;
         targetPos.z = transform.position.z; // Keep original Z depth
 
         // Clamp that target position to the current room's bounds
-        Vector3 clampedPos = GetClampedPosition(targetPos, _currentRoomCameraLimit);
+        Vector3 clampedPos = GetClampedPosition(targetPos, _currentRoomCameraLimitTrigger);
 
         if (_isTransitioning)
         {
@@ -60,11 +60,11 @@ public class RoomCameraController : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, clampedPos, followSpeed * Time.deltaTime);
     }
 
-    public void TransitionToRoom(RoomCameraLimit newRoomCameraLimit)
+    public void TransitionToRoom(RoomCameraLimitTrigger newRoomCameraLimitTrigger)
     {
-        if (_currentRoomCameraLimit == newRoomCameraLimit) return;
+        if (_currentRoomCameraLimitTrigger == newRoomCameraLimitTrigger) return;
 
-        _currentRoomCameraLimit = newRoomCameraLimit;
+        _currentRoomCameraLimitTrigger = newRoomCameraLimitTrigger;
         _isTransitioning = true;
 
         // Recalculate camera size in case orthographic size changed
@@ -73,7 +73,7 @@ public class RoomCameraController : MonoBehaviour
         // Determine where the camera should end up for the new room
         Vector3 targetPos = player.position;
         targetPos.z = transform.position.z;
-        Vector3 finalPos = GetClampedPosition(targetPos, newRoomCameraLimit);
+        Vector3 finalPos = GetClampedPosition(targetPos, newRoomCameraLimitTrigger);
 
         // Kill any existing tweens on this transform to avoid conflicts
         transform.DOKill();
@@ -92,9 +92,9 @@ public class RoomCameraController : MonoBehaviour
             });
     }
 
-    private Vector3 GetClampedPosition(Vector3 targetPosition, RoomCameraLimit roomCameraLimit)
+    private Vector3 GetClampedPosition(Vector3 targetPosition, RoomCameraLimitTrigger roomCameraLimitTrigger)
     {
-        Bounds bounds = roomCameraLimit.RoomCollider.bounds;
+        Bounds bounds = roomCameraLimitTrigger.RoomCollider.bounds;
 
         // Calculate the min/max X and Y positions the camera can have
         // so it doesn't show anything outside the room
