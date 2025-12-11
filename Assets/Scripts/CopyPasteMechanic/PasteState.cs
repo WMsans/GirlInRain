@@ -8,6 +8,9 @@ public class PasteState : State
         Copier copier = runner as Copier;
         if (copier == null) return;
 
+        // Interaction Logic (Destroy / Clear All)
+        copier.HandleInteractionLogic();
+
         // Switch to Copy State
         if (copier.inputSystemActions.Player.Crouch.WasPressedThisFrame())
         {
@@ -34,8 +37,16 @@ public class PasteState : State
             // Calculate Position
             Vector2 spawnPos = CalculatePastePosition(copier);
 
-            // Instantiate and Consume Energy
-            Instantiate(copier.MemorizedObject, spawnPos, Quaternion.identity);
+            // Instantiate, Register, and Consume Energy
+            GameObject newObj = Instantiate(copier.MemorizedObject, spawnPos, Quaternion.identity);
+            
+            // Register as copy so it can be destroyed later
+            CopiableObject copiable = newObj.GetComponent<CopiableObject>();
+            if (copiable != null)
+            {
+                copier.RegisterCopy(copiable);
+            }
+
             copier.ConsumeEnergy(copier.MemorizedCost);
         }
     }
@@ -52,21 +63,13 @@ public class PasteState : State
         Vector2 targetPos = playerPos + (direction.normalized * targetDistance);
 
         // 2. Check for obstacles (Line of Sight)
-        // Raycast from player to target position to see if we hit a wall
-        // We use the memorized collider's size.
-        
         RaycastHit2D hit = Physics2D.BoxCast(playerPos, copier.MemorizedCollider.bounds.size, 0, direction.normalized, targetDistance, copier.obstacleLayer);
         
         if (hit.collider != null)
         {
-            // FIX: Use hit.centroid (the center of the box at impact) instead of hit.point (the surface contact point).
-            // This ensures the object is placed "touching" the wall but not inside it.
             return hit.centroid;
-            
-            // Alternative calculation if hit.centroid is not available in your Unity version:
-            // return playerPos + (direction.normalized * hit.distance);
         }
 
-        return targetPos; // Paste at mouse or max range
+        return targetPos; 
     }
 }

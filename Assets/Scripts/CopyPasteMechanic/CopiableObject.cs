@@ -8,6 +8,10 @@ public class CopiableObject : MonoBehaviour
     [Tooltip("The prefab to spawn when pasted. If null, copies this gameObject.")]
     public GameObject prefabToSpawn;
 
+    // Flag to distinguish original objects from spawned copies
+    [HideInInspector]
+    public bool isCopy = false;
+
     // Helper to get the correct object to memorize
     public GameObject GetSourcePrefab()
     {

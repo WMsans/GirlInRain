@@ -262,6 +262,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CopiableObject
   energyCost: 10
   prefabToSpawn: {fileID: 0}
+  isCopy: 0
 --- !u!1 &466872295
 GameObject:
   m_ObjectHideFlags: 0
@@ -1126,7 +1127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Copier
   initialState: {fileID: 1913802624}
-  maxEnergy: 1000
+  maxEnergy: 30
   currentEnergy: 0
   maxPasteDistance: 3
   obstacleLayer:

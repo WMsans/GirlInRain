@@ -9,15 +9,18 @@ public class CopyState : State
         Copier copier = runner as Copier;
         if (copier == null) return;
 
+        // Interaction Logic (Destroy / Clear All)
+        copier.HandleInteractionLogic();
+
         // Switch to Paste State
-        if (((Copier)runner).inputSystemActions.Player.Crouch.WasPressedThisFrame()) // Ensure "Crouch" is defined in Input Manager
+        if (((Copier)runner).inputSystemActions.Player.Crouch.WasPressedThisFrame()) 
         {
             runner.ChangeState(copier.pasteState);
             return;
         }
 
         // Copy Logic
-        if (((Copier)runner).inputSystemActions.Player.Attack.WasPressedThisFrame()) // "Attack" defaults to Fire1 usually
+        if (((Copier)runner).inputSystemActions.Player.Attack.WasPressedThisFrame()) 
         {
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.value);
             
