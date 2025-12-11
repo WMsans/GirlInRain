@@ -19,6 +19,8 @@ public class PlayerStats : ScriptableObjectSingleton<PlayerStats>
     [FormerlySerializedAs("AirDeceleration")] [Tooltip("Deceleration in air only after stopping input mid-air")]
     public float airDeceleration = 30;
 
+    public float extraAirDeceleration = 30;
+
     [FormerlySerializedAs("GroundingForce")] [Tooltip("A constant downward force applied while grounded. Helps on slopes"), Range(0f, -10f)]
     public float groundingForce = -1.5f;
 

@@ -191,8 +191,6 @@ public class PlayerNormalState : PlayerState
         _performedGroundJump = true; // [Modified] Mark this as a ground jump
 
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, stats.jumpPower);
-        // Optionally add a small upward force even if Y velocity is already positive?
-        // rb.AddForce(Vector2.up * stats.jumpPower, ForceMode2D.Impulse); // Alternative way
     }
     private void ExecuteWallJump()
     {
@@ -228,63 +226,35 @@ public class PlayerNormalState : PlayerState
 
         if (lockoutActive)
         {
-            Debug.Log(Mathf.Approximately(Mathf.Sign(horizontalInput), _lastWallJumpDirection));
             // If lockout is active AND input is towards the wall we jumped from, ignore input
             if (!Mathf.Approximately(Mathf.Sign(horizontalInput), _lastWallJumpDirection))
             {
-                horizontalInput = 0; // Treat input as neutral regarding wall direction
-                // Optional: Could allow input *away* from the wall during lockout if desired,
-                // but setting to 0 ensures the initial arc isn't fought against.
+                horizontalInput = 0; 
             }
         }
 
+        float targetXVelocity = horizontalInput * stats.maxSpeed;
 
-        // USE the potentially modified 'horizontalInput' from now on
-
-        if (horizontalInput == 0) // Use modified input
+        if (horizontalInput == 0)
         {
-            // Apply deceleration (use air deceleration if wall sliding OR if lockout is active and input was zeroed)
-            var deceleration = (_grounded) ? stats.groundDeceleration : stats.airDeceleration;
-             // Apply slightly stronger deceleration during lockout? Optional.
-            // if (lockoutActive) deceleration *= 1.5f;
-
+            var deceleration = _grounded ? stats.groundDeceleration : stats.airDeceleration;
             rb.linearVelocity = new Vector2(Mathf.MoveTowards(rb.linearVelocity.x, 0, deceleration * Time.fixedDeltaTime), rb.linearVelocity.y);
         }
-        else if (rb.linearVelocityX > stats.maxSpeed)
+        // [FIXED] Symmetrical check for exceeding max speed (checks absolute value)
+        // AND checks if input is trying to accelerate further in that direction.
+        else if (Mathf.Abs(rb.linearVelocity.x) > stats.maxSpeed && Mathf.Sign(horizontalInput) == Mathf.Sign(rb.linearVelocity.x))
         {
-            if (!Mathf.Approximately(Mathf.Sign(horizontalInput), Mathf.Sign(rb.linearVelocity.x)))
-            {
-                rb.linearVelocity = new Vector2(Mathf.Sign(horizontalInput) * stats.maxSpeed, rb.linearVelocity.y);
-            }
+            // [Celeste Logic] Retain momentum but apply slight drag (Air Deceleration).
+            // Do NOT clamp instantly to maxSpeed, and do NOT apply acceleration.
+            // MoveTowards 'targetXVelocity' (which is lower than current speed) using airDeceleration handles the soft cap.
+            rb.linearVelocity = new Vector2(Mathf.MoveTowards(rb.linearVelocity.x, targetXVelocity, stats.extraAirDeceleration * Time.fixedDeltaTime), rb.linearVelocity.y);
         }
-        else // Player is providing horizontal input (that wasn't zeroed by lockout)
+        else
         {
-            float targetXVelocity = horizontalInput * stats.maxSpeed; // Use modified input
-
-            // Use air acceleration settings
-            float currentAcceleration = stats.acceleration;
-             // Reduce acceleration slightly during lockout? Optional.
-            // if (lockoutActive) currentAcceleration *= 0.75f;
-
-
-            // Check if changing direction OR if speed exceeds max (simplified logic)
-            // Note: Mathf.MoveTowards handles acceleration towards the target speed naturally.
-             rb.linearVelocity = new Vector2(Mathf.MoveTowards(rb.linearVelocity.x, targetXVelocity, currentAcceleration * Time.fixedDeltaTime), rb.linearVelocity.y);
-
-             // Clamping max speed is implicitly handled by MoveTowards if targetXVelocity is capped by maxSpeed,
-             // but explicit clamping might still be useful in some edge cases or if AddForce was used.
-             // If you need explicit clamping:
-             // rb.linearVelocity = new Vector2(Mathf.Clamp(rb.linearVelocity.x, -stats.maxSpeed, stats.maxSpeed), rb.linearVelocity.y);
+            // Standard Movement (Acceleration)
+            // Applies when speed < maxSpeed OR input is opposite to current velocity (Turn).
+            rb.linearVelocity = new Vector2(Mathf.MoveTowards(rb.linearVelocity.x, targetXVelocity, stats.acceleration * Time.fixedDeltaTime), rb.linearVelocity.y);
         }
-         // Consider if wall sliding needs specific horizontal velocity handling here - currently, it doesn't override horizontal input.
-         if (_isWallSliding)
-         {
-             // E.g., prevent moving further *into* the wall?
-             // if (Mathf.Sign(rb.linearVelocity.x) == _wallDirection && Mathf.Sign(horizontalInput) == _wallDirection)
-             // {
-             //     rb.linearVelocity = new Vector2(0, rb.linearVelocity.y); // Stop horizontal movement into wall
-             // }
-         }
     }
 
     #endregion
