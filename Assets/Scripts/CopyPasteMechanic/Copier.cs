@@ -90,13 +90,22 @@ public class Copier : StateMachineRunner
         // Check if the 'Interact' action exists to prevent errors
         // Assumes you have added 'Interact' to your Player action map
         var interactAction = inputSystemActions.Player.Interact;
+        
+        if (interactAction.WasPressedThisFrame())
+        {
+            // If we haven't triggered the hold action yet, treat it as a click
+            if (!hasTriggeredHold)
+            {
+                TryDeleteOneCopy();
+            }
+        }
 
         if (interactAction.IsPressed())
         {
             interactHoldDuration += Time.deltaTime;
 
-            // Hold Logic (2 seconds)
-            if (interactHoldDuration >= 2.0f && !hasTriggeredHold)
+            // Hold Logic (1 seconds)
+            if (interactHoldDuration >= 1.0f && !hasTriggeredHold)
             {
                 DeleteAllCopies();
                 hasTriggeredHold = true; // Prevent re-triggering while holding
@@ -104,16 +113,6 @@ public class Copier : StateMachineRunner
         }
         else
         {
-            // Release Logic
-            if (interactAction.WasReleasedThisFrame())
-            {
-                // If we haven't triggered the hold action yet, treat it as a click
-                if (!hasTriggeredHold)
-                {
-                    TryDeleteOneCopy();
-                }
-            }
-
             // Reset
             interactHoldDuration = 0f;
             hasTriggeredHold = false;
