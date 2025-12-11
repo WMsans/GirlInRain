@@ -34,6 +34,7 @@
 # Visual Studio cache directory
 .vs/
 .vscode/
+.idea/
 
 # Gradle cache directory
 .gradle/
@@ -99,3 +100,13 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# Plugin generated files
+/[Aa]ssets/Plugins/vHierarchy/
+/[Aa]ssets/Plugins/vInspector/
+/[Aa]ssets/Resources/GaskellgamesSettings.asset
+/[Aa]ssets/Resources/GaskellgamesSettings.asset.meta
+/[Aa]ssets/Editor Default Resources
+/[Aa]ssets/Editor Default Resources.meta
+/[Aa]ssets/Resources/DOTweenSettings.asset
+/[Aa]ssets/Resources/DOTweenSettings.asset.meta
