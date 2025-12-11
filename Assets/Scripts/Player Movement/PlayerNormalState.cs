@@ -31,6 +31,7 @@ public class PlayerNormalState : PlayerState
         _coyoteUsable = true;
         _bufferedJumpUsable = true;
         _canEndJumpEarly = false;
+        _performedGroundJump = false; // [Modified] Reset flag
         // Initialize wall state
         _isAgainstWall = false;
         _isWallSliding = false;
@@ -112,6 +113,7 @@ public class PlayerNormalState : PlayerState
             _canEndJumpEarly = true; // Allow early jump end after landing
             _isWallSliding = false; // Stop wall sliding when landing
             _isAgainstWall = false; // Not against wall when grounded
+            _performedGroundJump = false; // [Modified] Reset ground jump flag on landing
         }
         else if (_grounded && !groundHit)
         {
@@ -146,6 +148,7 @@ public class PlayerNormalState : PlayerState
     private bool _canEndJumpEarly;
     private bool _coyoteUsable;
     private float _timeJumpWasPressed;
+    private bool _performedGroundJump; // [Modified] New flag to track jump source
 
     private bool HasBufferedJump => _bufferedJumpUsable && Time.time < _timeJumpWasPressed + stats.jumpBuffer;
     private bool CanUseCoyote => _coyoteUsable && !_grounded && Time.time < GetFrameLeftGrounded() + stats.coyoteTime;
@@ -185,6 +188,7 @@ public class PlayerNormalState : PlayerState
         _coyoteUsable = false; // Consume coyote
         _isWallSliding = false; // Stop sliding if jumping from ground/coyote
         _canEndJumpEarly = true; // Allow early jump end for ground jumps
+        _performedGroundJump = true; // [Modified] Mark this as a ground jump
 
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, stats.jumpPower);
         // Optionally add a small upward force even if Y velocity is already positive?
@@ -198,6 +202,7 @@ public class PlayerNormalState : PlayerState
         _coyoteUsable = false;
         _isWallSliding = false;
         _canEndJumpEarly = true;
+        _performedGroundJump = false; // [Modified] Wall jumps do not count as ground jumps
 
         // --- Start Changes ---
         _lastWallJumpDirection = _lastWallDirection; // STORE the wall direction we are jumping OFF
@@ -311,8 +316,8 @@ public class PlayerNormalState : PlayerState
         {
             var inAirGravity = stats.fallAcceleration;
 
-            // Apply jump cut gravity modifier ONLY if not bouncing upwards from something else
-            if (_endedJumpEarly && rb.linearVelocity.y > 0) // TODO: Check bounce controller
+            // [Modified] Apply jump cut gravity modifier ONLY if not bouncing upwards from something else AND performed a ground jump
+            if (_endedJumpEarly && rb.linearVelocity.y > 0 && _performedGroundJump)
             {
                 inAirGravity *= stats.jumpEndEarlyGravityModifier;
             }

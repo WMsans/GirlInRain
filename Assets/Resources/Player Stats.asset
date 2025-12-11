@@ -28,10 +28,10 @@ MonoBehaviour:
   coyoteTime: 0.15
   jumpBuffer: 0.2
   wallCheckDistance: 0.1
-  wallSlideSpeed: 5
+  wallSlideSpeed: 7
   wallJumpCoyoteTime: 0.15
   wallJumpInputLockoutDuration: 0.15
-  wallJumpForceVertical: 15
-  wallJumpForceHorizontalBase: 15
-  wallJumpForceHorizontalWithInput: 20
+  wallJumpForceVertical: 24
+  wallJumpForceHorizontalBase: 14
+  wallJumpForceHorizontalWithInput: 18
   wallJumpInputLeeway: 0.1
