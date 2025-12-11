@@ -11,7 +11,7 @@
 	"iid": "ed600840-d380-11f0-9c67-eb31a40f071e",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 173,
+	"nextUid": 174,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "Free",
@@ -1582,7 +1582,7 @@
 			"savedSelections": [],
 			"cachedPixelData": {
 				"opaqueTiles": "11111111111111111111111111111111111111111111111111111111",
-				"averageColors": "f7bcf7bcf7bcf6abf7bcf6abf6abf7bcf8cdf7bcf8bdf8bdf8cdf7bcf7bcf7bcf7bcf8bdf8bdf8cdf6abf7bcf7bcf7bcf7bcf7bcf7bcf69af7bcf7bcf7bcf7bcf7bcf7bcf7bcf8cdf8cdf8cdf8cdf7abf7abfbdef8cdf8cdf8cdf8cdf7abf7abfbdefbdefbdefbdefbdefbdefbdefbde"
+				"averageColors": "f589f589f589f478f588f478f478f589f589f589f589f589f589f588f589f589f589f589f589f589f478f589f589f589f589f589f589f478f589f589f589f589f589f589f589f589f589f589f589f588f588f589f589f589f589f589f588f588f589f589f589f589f589f589f589f589"
 			}
 		}
 	], "enums": [], "externalEnums": [], "levelFields": [] },
@@ -1608,7 +1608,30 @@
 			"externalRelPath": "main/Level_0.ldtkl",
 			"fieldInstances": [],
 			"layerInstances": null,
-			"__neighbours": []
+			"__neighbours": [{ "levelIid": "472e8740-d380-11f0-8867-ad6b770d07c2", "dir": "e" }]
+		},
+		{
+			"identifier": "Level_1",
+			"iid": "472e8740-d380-11f0-8867-ad6b770d07c2",
+			"uid": 173,
+			"worldX": 640,
+			"worldY": 0,
+			"worldDepth": 0,
+			"pxWid": 640,
+			"pxHei": 368,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": true,
+			"bgRelPath": null,
+			"bgPos": null,
+			"bgPivotX": 0.5,
+			"bgPivotY": 0.5,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "main/Level_1.ldtkl",
+			"fieldInstances": [],
+			"layerInstances": null,
+			"__neighbours": [{ "levelIid": "ed605660-d380-11f0-9c67-93d60ed8152b", "dir": "w" }]
 		}
 	],
 	"worlds": [],
