@@ -1,0 +1,24 @@
+{
+    "PixelsPerUnit": 16,
+    "CustomLevelPrefab": {
+        "instanceID": 0
+    },
+    "IntGridValueColorsVisible": false,
+    "UseCompositeCollider": true,
+    "GeometryType": 0,
+    "CreateBackgroundColor": false,
+    "CreateLevelBoundsTrigger": false,
+    "UseParallax": true,
+    "ScaleEntities": true,
+    "IntGridValues": [
+        {
+            "_key": "Collision_1",
+            "_asset": {
+                "fileID": 11400000,
+                "guid": "53d1ab73557694b4d9c2f425294da3b2",
+                "type": 2
+            }
+        }
+    ],
+    "Entities": []
+}
