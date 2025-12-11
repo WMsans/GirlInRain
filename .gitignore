@@ -104,3 +104,7 @@ InitTestScene*.unity*
 # Plugin generated files
 /[Aa]ssets/Plugins/vHierarchy/
 /[Aa]ssets/Plugins/vInspector/
+/[Aa]ssets/Resources/GaskellgamesSettings.asset
+/[Aa]ssets/Resources/GaskellgamesSettings.asset.meta
+/[Aa]ssets/Editor Default Resources
+/[Aa]ssets/Editor Default Resources.meta
