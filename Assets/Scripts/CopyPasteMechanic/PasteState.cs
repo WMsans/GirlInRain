@@ -57,19 +57,25 @@ public class PasteState : State
         Vector2 playerPos = copier.transform.position;
         Vector2 direction = (mousePos - playerPos);
         float distanceToMouse = direction.magnitude;
+        Vector2 dirNormalized = direction.normalized;
 
         // 1. Clamp distance to max range
         float targetDistance = Mathf.Min(distanceToMouse, copier.maxPasteDistance);
-        Vector2 targetPos = playerPos + (direction.normalized * targetDistance);
 
-        // 2. Check for obstacles (Line of Sight)
-        RaycastHit2D hit = Physics2D.BoxCast(playerPos, copier.MemorizedCollider.bounds.size, 0, direction.normalized, targetDistance, copier.obstacleLayer);
+        // 2. Check for obstacles (Raycast)
+        // [Modified] Used Raycast instead of BoxCast. 
+        RaycastHit2D hit = Physics2D.Raycast(playerPos, dirNormalized, targetDistance, copier.obstacleLayer);
         
         if (hit.collider != null)
         {
-            return hit.centroid;
+            // [Modified] To prevent spawning in the wall without BoxCast, we calculate the object's extent 
+            // along the ray direction and offset the position back from the hit point.
+            Vector2 extents = copier.MemorizedCollider.bounds.extents;
+            float projection = (Mathf.Abs(dirNormalized.x) * extents.x) + (Mathf.Abs(dirNormalized.y) * extents.y);
+
+            return hit.point - (dirNormalized * projection);
         }
 
-        return targetPos; 
+        return playerPos + (dirNormalized * targetDistance); 
     }
 }

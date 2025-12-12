@@ -13,25 +13,28 @@ public class CopyState : State
         copier.HandleInteractionLogic();
 
         // Switch to Paste State
-        if (((Copier)runner).inputSystemActions.Player.Crouch.WasPressedThisFrame()) 
+        if (copier.inputSystemActions.Player.Crouch.WasPressedThisFrame()) 
         {
             runner.ChangeState(copier.pasteState);
             return;
         }
 
         // Copy Logic
-        if (((Copier)runner).inputSystemActions.Player.Attack.WasPressedThisFrame()) 
+        if (copier.inputSystemActions.Player.Attack.WasPressedThisFrame()) 
         {
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.value);
             
-            // Check for collider under mouse
-            Collider2D hit = Physics2D.OverlapPoint(mousePos);
-            if (hit != null)
+            Collider2D[] hits = Physics2D.OverlapPointAll(mousePos);
+            
+            foreach (Collider2D hit in hits)
             {
                 CopiableObject copiable = hit.GetComponent<CopiableObject>();
+                
+                // If we found a valid copiable object, memorize it and stop checking
                 if (copiable != null)
                 {
                     copier.Memorize(copiable.GetSourcePrefab(), copiable.energyCost);
+                    return; 
                 }
             }
         }

@@ -40,7 +40,7 @@ public class CopiableObject : MonoBehaviour
             // Determine if interaction is possible
             bool canCopy = _copier.CurrentState is CopyState;
             // Removal is allowed in both Copy and Paste states, but only for copies
-            bool canRemove = isCopy; 
+            bool canRemove = /*isCopy*/ false; 
 
             if (canCopy || canRemove)
             {
