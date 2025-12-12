@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 public class CopiableObject : MonoBehaviour
 {
@@ -18,22 +19,22 @@ public class CopiableObject : MonoBehaviour
     public bool isCopy = false;
 
     private Copier _copier;
-    private Collider2D _col;
+    public Collider2D col;
     private bool _isHoveredValid;
 
     private void Start()
     {
         _copier = FindFirstObjectByType<Copier>();
-        _col = GetComponent<Collider2D>();
+        if(!col) col = GetComponent<Collider2D>();
     }
 
     private void Update()
     {
-        if (_copier == null || _col == null || Mouse.current == null) return;
+        if (_copier == null || col == null || Mouse.current == null) return;
 
         // Perform manual overlap check to match Copier's input logic
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.value);
-        bool isOver = _col.OverlapPoint(mousePos);
+        bool isOver = col.OverlapPoint(mousePos);
 
         if (isOver)
         {

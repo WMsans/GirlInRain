@@ -183,7 +183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CopiableObject
   energyCost: 10
-  prefabToSpawn: {fileID: 0}
+  prefabToSpawn: {fileID: 8224894090505787015}
   onHover:
     m_PersistentCalls:
       m_Calls:

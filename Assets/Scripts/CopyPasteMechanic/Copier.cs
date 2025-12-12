@@ -49,7 +49,7 @@ public class Copier : StateMachineRunner
 
     public void Memorize(GameObject prefab, float cost)
     {
-        MemorizedCollider = prefab.GetComponent<Collider2D>();
+        MemorizedCollider = prefab.GetComponentInChildren<Collider2D>();
         MemorizedObject = prefab;
         MemorizedCost = cost;
         Debug.Log($"Memorized: {prefab.name} (Cost: {cost})");
@@ -152,7 +152,6 @@ public class Copier : StateMachineRunner
             }
         }
         activeCopies.Clear();
-        Debug.Log($"Cleared all {count} copies. Energy refunded.");
     }
 
     private void OnDrawGizmosSelected()
