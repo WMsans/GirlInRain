@@ -14,6 +14,10 @@ public class Copier : StateMachineRunner
     public bool useGridSnap = false;
     public float gridSize = 1f;
 
+    [Header("Visuals")]
+    public GameObject pastePreviewPrefab;
+    private GameObject _previewInstance;
+
     [Header("State References")]
     public State copyState;
     public State pasteState;
@@ -157,6 +161,92 @@ public class Copier : StateMachineRunner
             }
         }
         activeCopies.Clear();
+    }
+
+    public void UpdatePreview()
+    {
+        // 1. If we have nothing memorized, hide the preview
+        if (MemorizedObject == null)
+        {
+            HidePreview();
+            return;
+        }
+
+        // 2. Ensure preview instance exists
+        if (!_previewInstance && pastePreviewPrefab != null)
+        {
+            _previewInstance = Instantiate(pastePreviewPrefab);
+        }
+
+        if (!_previewInstance) return;
+
+        _previewInstance.SetActive(true);
+
+        // 3. Update Position
+        _previewInstance.transform.position = GetPastePosition();
+
+        // 4. Update Visuals (Sprite) from MemorizedObject
+        SpriteRenderer sourceSr = MemorizedObject.GetComponentInChildren<SpriteRenderer>();
+        SpriteRenderer previewSr = _previewInstance.GetComponentInChildren<SpriteRenderer>();
+
+        if (sourceSr != null && previewSr != null)
+        {
+            previewSr.sprite = sourceSr.sprite;
+            // Optional: Make it semi-transparent
+            Color c = sourceSr.color;
+            c.a = 0.5f; 
+            previewSr.color = c;
+            
+            // Match scale/rotation if needed
+            previewSr.transform.localScale = sourceSr.transform.localScale;
+            previewSr.transform.rotation = sourceSr.transform.rotation;
+        }
+    }
+
+    public void HidePreview()
+    {
+        if (_previewInstance != null)
+        {
+            _previewInstance.SetActive(false);
+        }
+    }
+
+    public Vector2 GetPastePosition()
+    {
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.value);
+        Vector2 playerPos = transform.position;
+        Vector2 direction = (mousePos - playerPos);
+        float distanceToMouse = direction.magnitude;
+        Vector2 dirNormalized = direction.normalized;
+
+        // 1. Clamp distance to max range
+        float targetDistance = Mathf.Min(distanceToMouse, maxPasteDistance);
+
+        // 2. Check for obstacles (Raycast)
+        RaycastHit2D hit = Physics2D.Raycast(playerPos, dirNormalized, targetDistance, obstacleLayer);
+        
+        Vector2 finalPos;
+
+        if (hit.collider != null)
+        {
+            // Offset position based on object extents to prevent wall clipping
+            Vector2 extents = (MemorizedCollider != null) ? MemorizedCollider.bounds.extents : Vector2.zero;
+            float projection = (Mathf.Abs(dirNormalized.x) * extents.x) + (Mathf.Abs(dirNormalized.y) * extents.y);
+
+            finalPos = hit.point - (dirNormalized * projection);
+        }
+        else
+        {
+            finalPos = playerPos + (dirNormalized * targetDistance); 
+        }
+
+        if (useGridSnap)
+        {
+            finalPos.x = Mathf.Round(finalPos.x / gridSize) * gridSize;
+            finalPos.y = Mathf.Round(finalPos.y / gridSize) * gridSize;
+        }
+
+        return finalPos;
     }
 
     private void OnDrawGizmosSelected()

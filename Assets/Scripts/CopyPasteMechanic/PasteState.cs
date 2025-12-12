@@ -11,9 +11,13 @@ public class PasteState : State
         // Interaction Logic (Destroy / Clear All)
         copier.HandleInteractionLogic();
 
+        // Update the Preview Object
+        copier.UpdatePreview();
+
         // Switch to Copy State
         if (copier.inputSystemActions.Player.Crouch.WasPressedThisFrame())
         {
+            copier.HidePreview(); // Hide the preview before switching
             runner.ChangeState(copier.copyState);
             return;
         }
@@ -35,7 +39,7 @@ public class PasteState : State
             }
 
             // Calculate Position
-            Vector2 spawnPos = CalculatePastePosition(copier);
+            Vector2 spawnPos = copier.GetPastePosition();
 
             // Instantiate, Register, and Consume Energy
             GameObject newObj = Instantiate(copier.MemorizedObject, spawnPos, Quaternion.identity);
@@ -49,45 +53,5 @@ public class PasteState : State
 
             copier.ConsumeEnergy(copier.MemorizedCost);
         }
-    }
-
-    private Vector2 CalculatePastePosition(Copier copier)
-    {
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.value);
-        Vector2 playerPos = copier.transform.position;
-        Vector2 direction = (mousePos - playerPos);
-        float distanceToMouse = direction.magnitude;
-        Vector2 dirNormalized = direction.normalized;
-
-        // 1. Clamp distance to max range
-        float targetDistance = Mathf.Min(distanceToMouse, copier.maxPasteDistance);
-
-        // 2. Check for obstacles (Raycast)
-        // [Modified] Used Raycast instead of BoxCast. 
-        RaycastHit2D hit = Physics2D.Raycast(playerPos, dirNormalized, targetDistance, copier.obstacleLayer);
-        
-        Vector2 finalPos;
-
-        if (hit.collider != null)
-        {
-            // [Modified] To prevent spawning in the wall without BoxCast, we calculate the object's extent 
-            // along the ray direction and offset the position back from the hit point.
-            Vector2 extents = copier.MemorizedCollider.bounds.extents;
-            float projection = (Mathf.Abs(dirNormalized.x) * extents.x) + (Mathf.Abs(dirNormalized.y) * extents.y);
-
-            finalPos = hit.point - (dirNormalized * projection);
-        }
-        else
-        {
-            finalPos = playerPos + (dirNormalized * targetDistance); 
-        }
-
-        if (copier.useGridSnap)
-        {
-            finalPos.x = Mathf.Round(finalPos.x / copier.gridSize) * copier.gridSize;
-            finalPos.y = Mathf.Round(finalPos.y / copier.gridSize) * copier.gridSize;
-        }
-
-        return finalPos;
     }
 }

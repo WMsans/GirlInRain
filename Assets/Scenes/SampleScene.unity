@@ -3549,6 +3549,7 @@ MonoBehaviour:
     m_Bits: 152
   useGridSnap: 1
   gridSize: 1
+  pastePreviewPrefab: {fileID: 3725899684651181094, guid: 4e711ed09366660819f0fdbef22546a4, type: 3}
   copyState: {fileID: 1913802624}
   pasteState: {fileID: 1913802625}
 --- !u!1001 &1856894127
@@ -4225,10 +4226,10 @@ TilemapCollider2D:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 519420032}
   - {fileID: 627817608}
   - {fileID: 619394802}
   - {fileID: 634664276}
   - {fileID: 1285568139}
   - {fileID: 73740179}
   - {fileID: 1856894127}
-  - {fileID: 519420032}
