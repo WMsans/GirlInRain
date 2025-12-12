@@ -10,7 +10,7 @@
 	},
 	"iid": "ed600840-d380-11f0-9c67-eb31a40f071e",
 	"jsonVersion": "1.5.3",
-	"appBuildId": 473703,
+	"appBuildId": 490398,
 	"nextUid": 175,
 	"identifierStyle": "Capitalize",
 	"toc": [],
@@ -38,7 +38,10 @@
 	"backupRelPath": null,
 	"levelNamePattern": "Level_%idx",
 	"tutorialDesc": null,
-	"customCommands": [{ "command": "../../Library/LDtkTilesetExporter/ExportTilesetDefinition.exe \"main\"", "when": "AfterSave" }],
+	"customCommands": [ { "command": "../../Library/LDtkTilesetExporter/ExportTilesetDefinition.exe \"main\"", "when": "AfterSave" }, {
+		"command": "../../Library/LDtkTilesetExporter/ExportTilesetDefinitionLinux.sh \"main\" $1",
+		"when": "AfterSave"
+	} ],
 	"flags": [],
 	"defs": { "layers": [
 		{
