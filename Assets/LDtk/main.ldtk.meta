@@ -22,7 +22,13 @@ ScriptedImporter:
   _intGridValues:
   - _key: Collision_1
     _asset: {fileID: 11400000, guid: 53d1ab73557694b4d9c2f425294da3b2, type: 2}
-  _entities: []
+  - _key: Collision_2
+    _asset: {instanceID: 0}
+  _entities:
+  - _key: Box
+    _asset: {fileID: 8224894090505787015, guid: 44c68461798c95b3aba49b3b33ec8157, type: 3}
+  - _key: Table
+    _asset: {instanceID: 0}
   _enumGenerate: 0
   _enumPath: 
   _enumNamespace: 

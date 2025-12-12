@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 136
   maxSpeed: 6
   acceleration: 70
   groundDeceleration: 125
   airDeceleration: 100
+  extraAirDeceleration: 30
   groundingForce: -1
   grounderDistance: 0.05
   jumpPower: 24

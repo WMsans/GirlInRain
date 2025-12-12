@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 478393ad72b0ec742b9f54182fbde276
+guid: 7f530cefae11f840c9a57b886be3af72
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -24,7 +24,7 @@ ScriptedImporter:
     normalMapFilter: 0
     flipGreenChannel: 0
     swizzle: 50462976
-    isReadable: 0
+    isReadable: 1
     streamingMipmaps: 0
     streamingMipmapsPriority: 0
     vTOnly: 0
@@ -102,7 +102,7 @@ ScriptedImporter:
     generateIndividualEvents: 1
     generateSpriteAtlas: 1
   importFileNodeState: 1
-  platformSettingsDirtyTick: 0
+  platformSettingsDirtyTick: 639010830071049940
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -127,9 +127,9 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: tileset template
+  - name: Spike
     originalName: 
-    pivot: {x: 0.5, y: 0.11111111}
+    pivot: {x: 0.53333336, y: 0}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -137,9 +137,9 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 112
-      height: 144
-    spriteID: b235230652cbd6e4e925d1832ae83100
+      width: 15
+      height: 5
+    spriteID: 09700a3dfe089e540a84d39c19f52d68
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -153,33 +153,57 @@ ScriptedImporter:
   asepriteLayers:
   - layerIndex: 0
     uuid:
-      value0: 3712288492
+      value0: 788633264
       value1: 0
       value2: 0
       value3: 0
     guid: 0
-    name: tileset template
+    name: Spike
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: tileset template
+    - name: Spike
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
         x: 0
-        y: -16
-        width: 112
-        height: 144
-      spriteId: b235230652cbd6e4e925d1832ae83100
+        y: 0
+        width: 15
+        height: 5
+      spriteId: 09700a3dfe089e540a84d39c19f52d68
     linkedCells: []
     tileCells: []
     tileSetIndex: 0
     parentIndex: -1
   tileSets: []
-  platformSettings: []
+  platformSettings:
+  - name: DefaultTexturePlatform
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: 4
+    textureCompression: 0
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+  - name: Standalone
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 112, y: 128}
-  previousTextureSize: {x: 128, y: 256}
+  canvasSize: {x: 16, y: 16}
+  previousTextureSize: {x: 32, y: 16}
