@@ -9,13 +9,4 @@ public class RoomCameraLimitTrigger : MonoBehaviour
     {
         RoomCollider = GetComponent<Collider2D>();
     }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        // When the player enters this trigger, tell the camera to switch to this room
-        if (collision.CompareTag("Player"))
-        {
-            RoomCameraController.Instance.TransitionToRoom(this);
-        }
-    }
 }

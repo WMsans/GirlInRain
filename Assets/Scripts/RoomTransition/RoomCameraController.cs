@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Camera))]
 public class RoomCameraController : MonoBehaviour
@@ -17,6 +18,10 @@ public class RoomCameraController : MonoBehaviour
     [SerializeField] private float followSpeed = 10f;
 
     private RoomCameraLimitTrigger _currentRoomCameraLimitTrigger;
+    
+    // Store all potential rooms in the scene
+    private List<RoomCameraLimitTrigger> _allRoomTriggers = new List<RoomCameraLimitTrigger>();
+    
     private Camera _cam;
     private float _camHeight;
     private float _camWidth;
@@ -24,7 +29,6 @@ public class RoomCameraController : MonoBehaviour
 
     private void Awake()
     {
-        // Simple Singleton for easy access from Room scripts
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
@@ -34,30 +38,65 @@ public class RoomCameraController : MonoBehaviour
 
     private void Start()
     {
-        // Optional: Initialize logic if player starts inside a room
-        // You might want to manually find the starting room if it's not set
+        // Find ALL room triggers in the scene, even those currently inactive.
+        // We do this in Start to ensure their Awake() methods have run and cached their colliders.
+        // Note: Check for both active and inactive objects to ensure we have the full list.
+        var triggers = FindObjectsByType<RoomCameraLimitTrigger>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        _allRoomTriggers.AddRange(triggers);
     }
 
     private void LateUpdate()
     {
-        if (player == null || _currentRoomCameraLimitTrigger == null) return;
+        if (player == null) return;
 
-        // Calculate where the camera WANTS to be (centered on player)
+        // 1. Actively check which room the player is inside
+        CheckActiveRoom();
+
+        if (_currentRoomCameraLimitTrigger == null) return;
+
+        // 2. Calculate target position
         Vector3 targetPos = player.position;
-        targetPos.z = transform.position.z; // Keep original Z depth
+        targetPos.z = transform.position.z;
 
-        // Clamp that target position to the current room's bounds
         Vector3 clampedPos = GetClampedPosition(targetPos, _currentRoomCameraLimitTrigger);
 
-        if (_isTransitioning)
+        if (_isTransitioning) return;
+
+        // 3. Smooth follow
+        transform.position = Vector3.Lerp(transform.position, clampedPos, followSpeed * Time.deltaTime);
+    }
+
+    private void CheckActiveRoom()
+    {
+        RoomCameraLimitTrigger bestRoom = null;
+        float minDistanceSqr = float.MaxValue;
+
+        // Iterate through all known rooms to find the best fit
+        foreach (var room in _allRoomTriggers)
         {
-            // If we are currently DOTweening (transitioning), 
-            // we let DOTween handle the movement. Do nothing here.
-            return;
+            // Skip if the room object or its collider is disabled (e.g. by RoomLoadManager)
+            if (room == null || !room.gameObject.activeInHierarchy || !room.RoomCollider.enabled) 
+                continue;
+
+            // Check if player is strictly inside the bounds
+            if (room.RoomCollider.bounds.Contains(player.position))
+            {
+                // If the player is in multiple overlapping rooms, pick the one 
+                // where the player is closest to the center.
+                float distSqr = (player.position - room.RoomCollider.bounds.center).sqrMagnitude;
+                if (distSqr < minDistanceSqr)
+                {
+                    minDistanceSqr = distSqr;
+                    bestRoom = room;
+                }
+            }
         }
 
-        // Standard smooth follow within the room
-        transform.position = Vector3.Lerp(transform.position, clampedPos, followSpeed * Time.deltaTime);
+        // If we found a valid room and it's different from the current one, switch.
+        if (bestRoom != null && bestRoom != _currentRoomCameraLimitTrigger)
+        {
+            TransitionToRoom(bestRoom);
+        }
     }
 
     public void TransitionToRoom(RoomCameraLimitTrigger newRoomCameraLimitTrigger)
@@ -67,25 +106,15 @@ public class RoomCameraController : MonoBehaviour
         _currentRoomCameraLimitTrigger = newRoomCameraLimitTrigger;
         _isTransitioning = true;
 
-        // Recalculate camera size in case orthographic size changed
         UpdateCameraSize();
 
-        // Determine where the camera should end up for the new room
         Vector3 targetPos = player.position;
         targetPos.z = transform.position.z;
         Vector3 finalPos = GetClampedPosition(targetPos, newRoomCameraLimitTrigger);
 
-        // Kill any existing tweens on this transform to avoid conflicts
         transform.DOKill();
-
-        // Use DOTween to smoothly move to the new correct position
         transform.DOMove(finalPos, transitionDuration)
             .SetEase(transitionEase)
-            .OnUpdate(() => 
-            {
-                // Optional: If you want the target to update while tweening (if player keeps moving),
-                // it gets complex. Usually, moving to the 'entry point' is sufficient.
-            })
             .OnComplete(() => 
             {
                 _isTransitioning = false;
@@ -96,31 +125,16 @@ public class RoomCameraController : MonoBehaviour
     {
         Bounds bounds = roomCameraLimitTrigger.RoomCollider.bounds;
 
-        // Calculate the min/max X and Y positions the camera can have
-        // so it doesn't show anything outside the room
         float minX = bounds.min.x + _camWidth;
         float maxX = bounds.max.x - _camWidth;
         float minY = bounds.min.y + _camHeight;
         float maxY = bounds.max.y - _camHeight;
 
-        // If the room is smaller than the camera view, center the camera on the room
-        if (maxX < minX) 
-        {
-            targetPosition.x = bounds.center.x;
-        }
-        else
-        {
-            targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);
-        }
+        if (maxX < minX) targetPosition.x = bounds.center.x;
+        else targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);
 
-        if (maxY < minY)
-        {
-            targetPosition.y = bounds.center.y;
-        }
-        else
-        {
-            targetPosition.y = Mathf.Clamp(targetPosition.y, minY, maxY);
-        }
+        if (maxY < minY) targetPosition.y = bounds.center.y;
+        else targetPosition.y = Mathf.Clamp(targetPosition.y, minY, maxY);
 
         return targetPosition;
     }
