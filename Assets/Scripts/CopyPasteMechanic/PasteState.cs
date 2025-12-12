@@ -66,6 +66,8 @@ public class PasteState : State
         // [Modified] Used Raycast instead of BoxCast. 
         RaycastHit2D hit = Physics2D.Raycast(playerPos, dirNormalized, targetDistance, copier.obstacleLayer);
         
+        Vector2 finalPos;
+
         if (hit.collider != null)
         {
             // [Modified] To prevent spawning in the wall without BoxCast, we calculate the object's extent 
@@ -73,9 +75,19 @@ public class PasteState : State
             Vector2 extents = copier.MemorizedCollider.bounds.extents;
             float projection = (Mathf.Abs(dirNormalized.x) * extents.x) + (Mathf.Abs(dirNormalized.y) * extents.y);
 
-            return hit.point - (dirNormalized * projection);
+            finalPos = hit.point - (dirNormalized * projection);
+        }
+        else
+        {
+            finalPos = playerPos + (dirNormalized * targetDistance); 
         }
 
-        return playerPos + (dirNormalized * targetDistance); 
+        if (copier.useGridSnap)
+        {
+            finalPos.x = Mathf.Round(finalPos.x / copier.gridSize) * copier.gridSize;
+            finalPos.y = Mathf.Round(finalPos.y / copier.gridSize) * copier.gridSize;
+        }
+
+        return finalPos;
     }
 }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.InputSystem; // Added for Keyboard access
 
 public class Copier : StateMachineRunner
 {
@@ -8,6 +9,10 @@ public class Copier : StateMachineRunner
     public float currentEnergy;
     public float maxPasteDistance = 10f;
     public LayerMask obstacleLayer; // Layers that block pasting (e.g., Ground/Walls)
+
+    [Header("Grid Settings")] // [New] Grid Settings
+    public bool useGridSnap = false;
+    public float gridSize = 1f;
 
     [Header("State References")]
     public State copyState;
@@ -158,5 +163,22 @@ public class Copier : StateMachineRunner
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, maxPasteDistance);
+
+        if (useGridSnap)
+        {
+            Gizmos.color = new Color(1, 1, 1, 0.3f);
+            Vector3 center = transform.position;
+            // Draw a small 5x5 grid around player for visualization
+            for (float x = -5; x <= 5; x += gridSize)
+            {
+                float snapX = Mathf.Round((center.x + x) / gridSize) * gridSize;
+                Gizmos.DrawLine(new Vector3(snapX, center.y - 5, 0), new Vector3(snapX, center.y + 5, 0));
+            }
+            for (float y = -5; y <= 5; y += gridSize)
+            {
+                float snapY = Mathf.Round((center.y + y) / gridSize) * gridSize;
+                Gizmos.DrawLine(new Vector3(center.x - 5, snapY, 0), new Vector3(center.x + 5, snapY, 0));
+            }
+        }
     }
 }

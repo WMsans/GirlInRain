@@ -3547,6 +3547,8 @@ MonoBehaviour:
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 152
+  useGridSnap: 1
+  gridSize: 1
   copyState: {fileID: 1913802624}
   pasteState: {fileID: 1913802625}
 --- !u!1001 &1856894127
