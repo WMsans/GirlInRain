@@ -3547,6 +3547,9 @@ MonoBehaviour:
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 152
+  checkPathCollisions: 0
+  attemptAutoSnap: 0
+  autoSnapSearchRadius: 3
   useGridSnap: 1
   gridSize: 1
   pastePreviewPrefab: {fileID: 3725899684651181094, guid: 4e711ed09366660819f0fdbef22546a4, type: 3}

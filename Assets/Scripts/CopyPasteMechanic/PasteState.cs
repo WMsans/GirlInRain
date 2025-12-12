@@ -38,8 +38,15 @@ public class PasteState : State
                 return;
             }
 
-            // Calculate Position
-            Vector2 spawnPos = copier.GetPastePosition();
+            // Calculate Position & Validity
+            Vector2 spawnPos = copier.GetPastePosition(out bool isValid);
+
+            if (!isValid)
+            {
+                Debug.Log("Cannot paste here: Location blocked.");
+                // Optional: Play error sound or shake screen
+                return;
+            }
 
             // Instantiate, Register, and Consume Energy
             GameObject newObj = Instantiate(copier.MemorizedObject, spawnPos, Quaternion.identity);

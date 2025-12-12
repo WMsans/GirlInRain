@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.InputSystem; // Added for Keyboard access
+using UnityEngine.InputSystem;
 
 public class Copier : StateMachineRunner
 {
@@ -10,7 +10,17 @@ public class Copier : StateMachineRunner
     public float maxPasteDistance = 10f;
     public LayerMask obstacleLayer; // Layers that block pasting (e.g., Ground/Walls)
 
-    [Header("Grid Settings")] // [New] Grid Settings
+    [Header("Paste Logic")]
+    [Tooltip("If true, uses a Raycast from player to target to prevent pasting through walls (Path Overlap). If false, directly tests the target position (Target Overlap).")]
+    public bool checkPathCollisions = true;
+
+    [Tooltip("Only used if 'Check Path Collisions' is false. If the target position is blocked, should we try to find the nearest empty slot?")]
+    public bool attemptAutoSnap = false;
+
+    [Tooltip("If Auto Snap is enabled, how far should we search for an empty slot?")]
+    public float autoSnapSearchRadius = 3f;
+
+    [Header("Grid Settings")]
     public bool useGridSnap = false;
     public float gridSize = 1f;
 
@@ -24,10 +34,10 @@ public class Copier : StateMachineRunner
 
     // Internal Memory
     public GameObject MemorizedObject { get; private set; }
-    public Collider2D MemorizedCollider {get; private set;}
+    public Collider2D MemorizedCollider { get; private set; }
     public float MemorizedCost { get; private set; }
     
-    public InputSystem_Actions inputSystemActions { get;private set; }
+    public InputSystem_Actions inputSystemActions { get; private set; }
 
     // Copy Tracking
     private List<CopiableObject> activeCopies = new List<CopiableObject>();
@@ -93,16 +103,12 @@ public class Copier : StateMachineRunner
         }
     }
 
-    // Called by States to handle deletion logic
     public void HandleInteractionLogic()
     {
-        // Check if the 'Interact' action exists to prevent errors
-        // Assumes you have added 'Interact' to your Player action map
         var interactAction = inputSystemActions.Player.Interact;
         
         if (interactAction.WasPressedThisFrame())
         {
-            // If we haven't triggered the hold action yet, treat it as a click
             if (!hasTriggeredHold)
             {
                 TryDeleteOneCopy();
@@ -113,16 +119,14 @@ public class Copier : StateMachineRunner
         {
             interactHoldDuration += Time.deltaTime;
 
-            // Hold Logic (1 seconds)
             if (interactHoldDuration >= 1.0f && !hasTriggeredHold)
             {
                 DeleteAllCopies();
-                hasTriggeredHold = true; // Prevent re-triggering while holding
+                hasTriggeredHold = true;
             }
         }
         else
         {
-            // Reset
             interactHoldDuration = 0f;
             hasTriggeredHold = false;
         }
@@ -130,13 +134,12 @@ public class Copier : StateMachineRunner
 
     private void TryDeleteOneCopy()
     {
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(UnityEngine.InputSystem.Mouse.current.position.value);
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.value);
         Collider2D hit = Physics2D.OverlapPoint(mousePos);
 
         if (hit != null)
         {
             CopiableObject obj = hit.GetComponent<CopiableObject>();
-            // Only destroy if it is a registered copy
             if (obj != null && obj.isCopy)
             {
                 RefundEnergy(obj.energyCost);
@@ -149,15 +152,12 @@ public class Copier : StateMachineRunner
 
     private void DeleteAllCopies()
     {
-        int count = 0;
-        // Loop backwards to remove items safely
         for (int i = activeCopies.Count - 1; i >= 0; i--)
         {
             if (activeCopies[i] != null)
             {
                 RefundEnergy(activeCopies[i].energyCost);
                 Destroy(activeCopies[i].gameObject);
-                count++;
             }
         }
         activeCopies.Clear();
@@ -165,14 +165,12 @@ public class Copier : StateMachineRunner
 
     public void UpdatePreview()
     {
-        // 1. If we have nothing memorized, hide the preview
         if (MemorizedObject == null)
         {
             HidePreview();
             return;
         }
 
-        // 2. Ensure preview instance exists
         if (!_previewInstance && pastePreviewPrefab != null)
         {
             _previewInstance = Instantiate(pastePreviewPrefab);
@@ -180,24 +178,31 @@ public class Copier : StateMachineRunner
 
         if (!_previewInstance) return;
 
+        // Get Position and Validity
+        Vector2 pastePos = GetPastePosition(out bool isValid);
+
         _previewInstance.SetActive(true);
+        _previewInstance.transform.position = pastePos;
 
-        // 3. Update Position
-        _previewInstance.transform.position = GetPastePosition();
-
-        // 4. Update Visuals (Sprite) from MemorizedObject
         SpriteRenderer sourceSr = MemorizedObject.GetComponentInChildren<SpriteRenderer>();
         SpriteRenderer previewSr = _previewInstance.GetComponentInChildren<SpriteRenderer>();
 
         if (sourceSr != null && previewSr != null)
         {
             previewSr.sprite = sourceSr.sprite;
-            // Optional: Make it semi-transparent
-            Color c = sourceSr.color;
-            c.a = 0.5f; 
-            previewSr.color = c;
             
-            // Match scale/rotation if needed
+            // Visual feedback for Invalid placement
+            Color c = sourceSr.color;
+            if (isValid)
+            {
+                c.a = 0.5f; // Semi-transparent valid
+                previewSr.color = c;
+            }
+            else
+            {
+                previewSr.color = new Color(1f, 0f, 0f, 0.5f); // Red invalid
+            }
+            
             previewSr.transform.localScale = sourceSr.transform.localScale;
             previewSr.transform.rotation = sourceSr.transform.rotation;
         }
@@ -211,7 +216,11 @@ public class Copier : StateMachineRunner
         }
     }
 
-    public Vector2 GetPastePosition()
+    /// <summary>
+    /// Calculates the paste position based on current settings.
+    /// Returns true via 'isValid' if the position is safe to paste, false if blocked/prevented.
+    /// </summary>
+    public Vector2 GetPastePosition(out bool isValid)
     {
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.value);
         Vector2 playerPos = transform.position;
@@ -219,34 +228,144 @@ public class Copier : StateMachineRunner
         float distanceToMouse = direction.magnitude;
         Vector2 dirNormalized = direction.normalized;
 
-        // 1. Clamp distance to max range
-        float targetDistance = Mathf.Min(distanceToMouse, maxPasteDistance);
+        isValid = true;
+        Vector2 finalPos = Vector2.zero;
 
-        // 2. Check for obstacles (Raycast)
-        RaycastHit2D hit = Physics2D.Raycast(playerPos, dirNormalized, targetDistance, obstacleLayer);
+        // --- OPTION A: RAYCAST PATH (Original Behavior) ---
+        if (checkPathCollisions)
+        {
+            float targetDistance = Mathf.Min(distanceToMouse, maxPasteDistance);
+            RaycastHit2D hit = Physics2D.Raycast(playerPos, dirNormalized, targetDistance, obstacleLayer);
+
+            if (hit.collider != null)
+            {
+                Vector2 extents = (MemorizedCollider != null) ? MemorizedCollider.bounds.extents : Vector2.zero;
+                float projection = (Mathf.Abs(dirNormalized.x) * extents.x) + (Mathf.Abs(dirNormalized.y) * extents.y);
+                finalPos = hit.point - (dirNormalized * projection);
+            }
+            else
+            {
+                finalPos = playerPos + (dirNormalized * targetDistance);
+            }
+
+            if (useGridSnap)
+            {
+                finalPos = SnapToGrid(finalPos);
+            }
+            
+            return finalPos;
+        }
+
+        // --- OPTION B: DIRECT TEST (New Behavior) ---
         
-        Vector2 finalPos;
-
-        if (hit.collider != null)
-        {
-            // Offset position based on object extents to prevent wall clipping
-            Vector2 extents = (MemorizedCollider != null) ? MemorizedCollider.bounds.extents : Vector2.zero;
-            float projection = (Mathf.Abs(dirNormalized.x) * extents.x) + (Mathf.Abs(dirNormalized.y) * extents.y);
-
-            finalPos = hit.point - (dirNormalized * projection);
-        }
-        else
-        {
-            finalPos = playerPos + (dirNormalized * targetDistance); 
-        }
+        // 1. Determine ideal target based on mouse cursor (clamped to max distance)
+        float clampedDistance = Mathf.Min(distanceToMouse, maxPasteDistance);
+        Vector2 targetPos = playerPos + (dirNormalized * clampedDistance);
 
         if (useGridSnap)
         {
-            finalPos.x = Mathf.Round(finalPos.x / gridSize) * gridSize;
-            finalPos.y = Mathf.Round(finalPos.y / gridSize) * gridSize;
+            targetPos = SnapToGrid(targetPos);
         }
 
-        return finalPos;
+        // 2. Check overlap at target
+        if (IsPositionValid(targetPos))
+        {
+            return targetPos;
+        }
+        else
+        {
+            // Position is blocked.
+            if (attemptAutoSnap)
+            {
+                // 3. Try to find nearest empty slot
+                if (TryFindNearestEmptySlot(targetPos, playerPos, out Vector2 foundPos))
+                {
+                    return foundPos;
+                }
+            }
+            
+            // If we are here, we are blocked and either autoSnap is off, or it failed.
+            isValid = false;
+            return targetPos;
+        }
+    }
+
+    private Vector2 SnapToGrid(Vector2 pos)
+    {
+        pos.x = Mathf.Round(pos.x / gridSize) * gridSize;
+        pos.y = Mathf.Round(pos.y / gridSize) * gridSize;
+        return pos;
+    }
+
+    private bool IsPositionValid(Vector2 pos)
+    {
+        if (MemorizedCollider == null) return true;
+
+        // Use OverlapBox assuming the object is roughly box-shaped, or use the collider bounds size
+        Vector2 size = MemorizedCollider.bounds.size;
+        // Decrease size slightly to avoid floating point errors with adjacent tiles
+        size *= 0.95f; 
+
+        Collider2D hit = Physics2D.OverlapBox(pos, size, 0f, obstacleLayer);
+        return hit == null;
+    }
+
+    private bool TryFindNearestEmptySlot(Vector2 origin, Vector2 playerPos, out Vector2 result)
+    {
+        // Spiral / Radial Search
+        // To prefer player direction, we can sort candidates by distance to player? 
+        // Or simply check "pull back" positions first? 
+        // A robust way is to check points in a grid around 'origin' within 'autoSnapSearchRadius'.
+
+        List<Vector2> candidates = new List<Vector2>();
+        
+        float step = useGridSnap ? gridSize : 0.5f; 
+        int steps = Mathf.CeilToInt(autoSnapSearchRadius / step);
+
+        for (int x = -steps; x <= steps; x++)
+        {
+            for (int y = -steps; y <= steps; y++)
+            {
+                if (x == 0 && y == 0) continue; // Skip center (already checked)
+
+                Vector2 offset = new Vector2(x * step, y * step);
+                if (offset.magnitude > autoSnapSearchRadius) continue;
+
+                candidates.Add(origin + offset);
+            }
+        }
+
+        // Sort candidates:
+        // Primary Metric: Distance from original target (Closest to where user clicked)
+        // Secondary Metric: Distance to Player (Prefer positions closer to player / along the path)
+        candidates.Sort((a, b) =>
+        {
+            float distToTargetA = Vector2.SqrMagnitude(a - origin);
+            float distToTargetB = Vector2.SqrMagnitude(b - origin);
+            
+            // Tolerance to group by "rings"
+            if (Mathf.Abs(distToTargetA - distToTargetB) > 0.01f)
+            {
+                return distToTargetA.CompareTo(distToTargetB);
+            }
+            
+            // If roughly same distance from target, pick the one closer to player
+            float distToPlayerA = Vector2.SqrMagnitude(a - playerPos);
+            float distToPlayerB = Vector2.SqrMagnitude(b - playerPos);
+            return distToPlayerA.CompareTo(distToPlayerB);
+        });
+
+        foreach (Vector2 p in candidates)
+        {
+            if (IsPositionValid(p))
+            {
+                result = p;
+                return true;
+            }
+        }
+
+        result = origin;
+        return false;
     }
 
     private void OnDrawGizmosSelected()
@@ -254,21 +373,12 @@ public class Copier : StateMachineRunner
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, maxPasteDistance);
 
-        if (useGridSnap)
+        if (checkPathCollisions == false && attemptAutoSnap)
         {
-            Gizmos.color = new Color(1, 1, 1, 0.3f);
-            Vector3 center = transform.position;
-            // Draw a small 5x5 grid around player for visualization
-            for (float x = -5; x <= 5; x += gridSize)
-            {
-                float snapX = Mathf.Round((center.x + x) / gridSize) * gridSize;
-                Gizmos.DrawLine(new Vector3(snapX, center.y - 5, 0), new Vector3(snapX, center.y + 5, 0));
-            }
-            for (float y = -5; y <= 5; y += gridSize)
-            {
-                float snapY = Mathf.Round((center.y + y) / gridSize) * gridSize;
-                Gizmos.DrawLine(new Vector3(center.x - 5, snapY, 0), new Vector3(center.x + 5, snapY, 0));
-            }
+             Gizmos.color = Color.cyan;
+             // Draw search radius around mouse approx location for visualization
+             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.value);
+             Gizmos.DrawWireSphere(mousePos, autoSnapSearchRadius);
         }
     }
 }
