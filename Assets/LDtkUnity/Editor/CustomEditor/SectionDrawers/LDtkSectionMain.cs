@@ -57,10 +57,10 @@ namespace LDtkUnity.Editor
             text = "Scale Entities",
             tooltip = "Apply a scale factor to entity prefab instances if they were resized in LDtk."
         };
-        private static readonly GUIContent LayerSortingOrders = new GUIContent
+        private static readonly GUIContent CustomSortingOrders = new GUIContent
         {
-            text = "Layer Sorting Orders",
-            tooltip = "Custom sorting orders for specific layers. If a layer is not defined here, it will automatically decrement starting from 0."
+            text = "Custom Sorting Orders",
+            tooltip = "Enable this to customize the sorting order for specific layers. If disabled, layers will automatically decrement starting from 0."
         };
         
         protected override string GuiText => "Main";
@@ -113,9 +113,53 @@ namespace LDtkUnity.Editor
             DrawField(UseParallax, LDtkProjectImporter.USE_PARALLAX);
             DrawField(ScaleEntities, LDtkProjectImporter.SCALE_ENTITIES);
             
-            SerializedProperty layerOrders = DrawField(LayerSortingOrders, LDtkProjectImporter.LAYER_SORTING_ORDERS); 
+            DrawLayerSortingOrders(); 
 
             Editor.DrawDependenciesProperty();
+        }
+
+        private void DrawLayerSortingOrders()
+        {
+            SerializedProperty customProp = DrawField(CustomSortingOrders, LDtkProjectImporter.CUSTOM_SORTING_ORDERS);
+
+            if (!customProp.boolValue)
+            {
+                return;
+            }
+
+            SerializedProperty sortingOrderArray = SerializedObject.FindProperty(LDtkProjectImporter.LAYER_SORTING_ORDERS);
+            
+            // Sync array with data
+            LayerDefinition[] layers = _data.Defs.Layers;
+            if (sortingOrderArray.arraySize != layers.Length)
+            {
+                sortingOrderArray.arraySize = layers.Length;
+            }
+
+            for (int i = 0; i < layers.Length; i++)
+            {
+                SerializedProperty element = sortingOrderArray.GetArrayElementAtIndex(i);
+                SerializedProperty layerNameProp = element.FindPropertyRelative("Layer");
+                SerializedProperty orderProp = element.FindPropertyRelative("Order");
+
+                string layerName = layers[i].Identifier;
+                
+                // If name is different or empty (newly created), set it and default order
+                if (layerNameProp.stringValue != layerName)
+                {
+                    layerNameProp.stringValue = layerName;
+                    // Default auto generated value: -1, -2, etc. (starts at 0 and decrements)
+                    orderProp.intValue = -(i + 1);
+                }
+
+                EditorGUILayout.BeginHorizontal();
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUILayout.TextField(layerNameProp.stringValue);
+                }
+                EditorGUILayout.PropertyField(orderProp, GUIContent.none);
+                EditorGUILayout.EndHorizontal();
+            }
         }
 
         private void PixelsPerUnitField()

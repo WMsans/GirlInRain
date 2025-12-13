@@ -38,6 +38,7 @@ namespace LDtkUnity.Editor
         public const string ENUM_GENERATE = nameof(_enumGenerate);
         public const string ENUM_PATH = nameof(_enumPath);
         public const string ENUM_NAMESPACE = nameof(_enumNamespace);
+        public const string CUSTOM_SORTING_ORDERS = nameof(_customSortingOrders);
         public const string LAYER_SORTING_ORDERS = nameof(_layerSortingOrders); 
         
         
@@ -64,6 +65,8 @@ namespace LDtkUnity.Editor
         [SerializeField] private string _enumPath = null;
         [SerializeField] private string _enumNamespace = string.Empty;
 
+        [SerializeField] private bool _customSortingOrders = false;
+        
         [Serializable]
         public struct LayerSortingOrder
         {
@@ -83,7 +86,8 @@ namespace LDtkUnity.Editor
         public bool CreateLevelBoundsTrigger => _createLevelBoundsTrigger;
         public bool UseParallax => _useParallax;
         public bool ScaleEntities => _scaleEntities;
-        public LayerSortingOrder[] LayerSortingOrders => _layerSortingOrders; 
+        public bool CustomSortingOrders => _customSortingOrders;
+        public LayerSortingOrder[] LayerSortingOrders => _customSortingOrders ? _layerSortingOrders : Array.Empty<LayerSortingOrder>(); 
 
         //all of these are wiped after the entire import is done
         private LDtkArtifactAssets _artifacts;
