@@ -11,7 +11,7 @@
 	"iid": "ed600840-d380-11f0-9c67-eb31a40f071e",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 490398,
-	"nextUid": 187,
+	"nextUid": 188,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "Free",
@@ -1736,7 +1736,7 @@
 			"savedSelections": [],
 			"cachedPixelData": {
 				"opaqueTiles": "111111111111111111111111111111111111111111111111111111110000000",
-				"averageColors": "f589f589f589f478f588f478f478f589f589f589f589f589f589f588f589f589f589f589f589f589f478f589f589f589f589f589f589f478f589f589f589f589f589f589f589f589f589f589f589f588f588f589f589f589f589f589f588f588f589f589f589f589f589f589f589f5894cde000000000000000000000000"
+				"averageColors": "f589f589f589f478f588f478f478f589f589f589f589f589f589f588f589f589f589f589f589f589f478f589f589f589f589f589f589f478f589f589f589f589f589f589f589f589f589f589f589f588f588f589f589f589f589f589f588f588f589f589f589f589f589f589f589f5899cde000000000000000000000000"
 			}
 		},
 		{
@@ -1827,7 +1827,13 @@
 			"externalRelPath": "main/Level_2.ldtkl",
 			"fieldInstances": [],
 			"layerInstances": null,
-			"__neighbours": [ { "levelIid": "472e8740-d380-11f0-8867-ad6b770d07c2", "dir": "w" }, { "levelIid": "b0789860-d380-11f0-874a-6376b0f31d51", "dir": "nw" }, { "levelIid": "f129ea70-d380-11f0-874a-8f46008f454f", "dir": "e" }, { "levelIid": "d852a250-d380-11f0-874a-f5a77bd5a832", "dir": "sw" } ]
+			"__neighbours": [
+				{ "levelIid": "472e8740-d380-11f0-8867-ad6b770d07c2", "dir": "w" },
+				{ "levelIid": "b0789860-d380-11f0-874a-6376b0f31d51", "dir": "nw" },
+				{ "levelIid": "f129ea70-d380-11f0-874a-8f46008f454f", "dir": "e" },
+				{ "levelIid": "d852a250-d380-11f0-874a-f5a77bd5a832", "dir": "sw" },
+				{ "levelIid": "52976a80-d380-11f0-96f4-b18e4ad27566", "dir": "se" }
+			]
 		},
 		{
 			"identifier": "Level_3",
@@ -1873,7 +1879,7 @@
 			"externalRelPath": "main/Level_4.ldtkl",
 			"fieldInstances": [],
 			"layerInstances": null,
-			"__neighbours": [{ "levelIid": "89076fc0-d380-11f0-bae6-8334a9afccf3", "dir": "w" }]
+			"__neighbours": [ { "levelIid": "89076fc0-d380-11f0-bae6-8334a9afccf3", "dir": "w" }, { "levelIid": "52976a80-d380-11f0-96f4-b18e4ad27566", "dir": "s" } ]
 		},
 		{
 			"identifier": "Level_5",
@@ -1897,6 +1903,29 @@
 			"fieldInstances": [],
 			"layerInstances": null,
 			"__neighbours": [ { "levelIid": "ed605660-d380-11f0-9c67-93d60ed8152b", "dir": "nw" }, { "levelIid": "472e8740-d380-11f0-8867-ad6b770d07c2", "dir": "n" }, { "levelIid": "89076fc0-d380-11f0-bae6-8334a9afccf3", "dir": "ne" } ]
+		},
+		{
+			"identifier": "Level_6",
+			"iid": "52976a80-d380-11f0-96f4-b18e4ad27566",
+			"uid": 187,
+			"worldX": 1872,
+			"worldY": 352,
+			"worldDepth": 0,
+			"pxWid": 624,
+			"pxHei": 352,
+			"__bgColor": "#696A79",
+			"bgColor": null,
+			"useAutoIdentifier": true,
+			"bgRelPath": null,
+			"bgPos": null,
+			"bgPivotX": 0.5,
+			"bgPivotY": 0.5,
+			"__smartColor": "#ADADB5",
+			"__bgPos": null,
+			"externalRelPath": "main/Level_6.ldtkl",
+			"fieldInstances": [],
+			"layerInstances": null,
+			"__neighbours": [ { "levelIid": "89076fc0-d380-11f0-bae6-8334a9afccf3", "dir": "nw" }, { "levelIid": "f129ea70-d380-11f0-874a-8f46008f454f", "dir": "n" } ]
 		}
 	],
 	"worlds": [],
