@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
 namespace LDtkUnity.Editor
 {
@@ -19,7 +18,6 @@ namespace LDtkUnity.Editor
             if (layerIdentifier != null && _overrides != null && _overrides.TryGetValue(layerIdentifier, out int order))
             {
                 SortingOrderValue = order;
-                Debug.Log(order);
                 return;
             }
             
