@@ -91,6 +91,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fc1073ef5f22fcd49f0ed599c3a24ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Water
+  _waterPrefab: {fileID: 114937427145656820, guid: bdcdad5fadc9908488bc52079ca8cb4a, type: 3}
 --- !u!1 &1730643000947330320
 GameObject:
   m_ObjectHideFlags: 0
