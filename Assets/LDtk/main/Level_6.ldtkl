@@ -29,6 +29,31 @@
 	"fieldInstances": [],
 	"layerInstances": [
 		{
+			"__identifier": "Liquid",
+			"__type": "Entities",
+			"__cWid": 39,
+			"__cHei": 22,
+			"__gridSize": 16,
+			"__opacity": 1,
+			"__pxTotalOffsetX": 0,
+			"__pxTotalOffsetY": 0,
+			"__tilesetDefUid": null,
+			"__tilesetRelPath": null,
+			"iid": "4070e9f1-d380-11f0-9372-af40052edece",
+			"levelId": 187,
+			"layerDefUid": 188,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"visible": true,
+			"optionalRules": [],
+			"intGridCsv": [],
+			"autoLayerTiles": [],
+			"seed": 7471950,
+			"overrideTilesetUid": null,
+			"gridTiles": [],
+			"entityInstances": []
+		},
+		{
 			"__identifier": "Copier",
 			"__type": "Entities",
 			"__cWid": 39,
@@ -799,5 +824,5 @@
 			"entityInstances": []
 		}
 	],
-	"__neighbours": [ { "levelIid": "89076fc0-d380-11f0-bae6-8334a9afccf3", "dir": "nw" }, { "levelIid": "f129ea70-d380-11f0-874a-8f46008f454f", "dir": "n" } ]
+	"__neighbours": [ { "levelIid": "89076fc0-d380-11f0-bae6-8334a9afccf3", "dir": "nw" }, { "levelIid": "f129ea70-d380-11f0-874a-8f46008f454f", "dir": "n" }, { "levelIid": "563174d0-d380-11f0-9372-f763ceb991bd", "dir": "ne" } ]
 }
