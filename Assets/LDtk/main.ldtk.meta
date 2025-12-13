@@ -34,3 +34,11 @@ ScriptedImporter:
   _enumGenerate: 0
   _enumPath: 
   _enumNamespace: 
+  _customSortingOrders: 1
+  _layerSortingOrders:
+  - Layer: Liquid
+    Order: -1
+  - Layer: Copier
+    Order: -2
+  - Layer: Collision
+    Order: 5
