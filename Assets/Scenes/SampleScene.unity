@@ -594,7 +594,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04455d9344da4944a08842c2cdb86f19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WeightGiver
-  rb: {fileID: 341969447}
+  weightClass: 2
+  autoConfigureRigidbody: 1
+  lightMass: 0.5
+  mediumMass: 1
+  heavyMass: 50
+  massiveMass: 1000
 --- !u!1001 &452235932
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4802,7 +4807,7 @@ MonoBehaviour:
   OnWeightRemoved:
     m_PersistentCalls:
       m_Calls: []
-  currentMaxWeight: 0
+  currentTotalWeight: 0
 --- !u!1001 &1821020191
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5166,7 +5171,7 @@ MonoBehaviour:
   initialState: {fileID: 1913802624}
   maxEnergy: 30
   currentEnergy: 0
-  maxPasteDistance: 8
+  maxPasteDistance: 10
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 152

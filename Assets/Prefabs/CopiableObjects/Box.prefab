@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 2639716929623089002}
   - component: {fileID: 3700900724490785823}
   - component: {fileID: 9222331427475172448}
+  - component: {fileID: 989927781094164638}
   m_Layer: 7
   m_Name: Box
   m_TagString: Untagged
@@ -215,6 +216,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   isCopy: 0
+  col: {fileID: 0}
 --- !u!114 &2639716929623089002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,3 +255,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c5dbbb1030d96d438905b0e01caa8d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: AllIn1VfxAssmebly::AllIn1VfxToolkit.AllIn1VfxComponent
+--- !u!114 &989927781094164638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8224894090505787015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04455d9344da4944a08842c2cdb86f19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeightGiver
+  weightClass: 2
+  autoConfigureRigidbody: 1

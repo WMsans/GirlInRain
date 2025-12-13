@@ -156,7 +156,7 @@ MeshRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &114937427145656820
@@ -348,7 +348,7 @@ MonoBehaviour:
   reflectionZOffset: 0
   reflectionYOffset: 0
   _renderingModuleSortingLayerID: 0
-  _renderingModuleSortingOrder: 0
+  _renderingModuleSortingOrder: 10
   _renderingModuleFarClipPlane: 1000
   _renderingModuleRenderPixelLights: 1
   _renderingModuleAllowMSAA: 0

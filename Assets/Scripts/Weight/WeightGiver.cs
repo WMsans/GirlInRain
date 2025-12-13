@@ -8,19 +8,18 @@ public class WeightGiver : MonoBehaviour
     [SerializeField] private WeightClass weightClass = WeightClass.Medium;
     [SerializeField] private bool autoConfigureRigidbody = true;
 
-    [Header("Configuration")]
-    [SerializeField] private float lightMass = 0.5f;
-    [SerializeField] private float mediumMass = 1f;
-    [SerializeField] private float heavyMass = 50f;
-    [SerializeField] private float massiveMass = 1000f;
+    private const float LightMass = 0.5f;
+    private const float MediumMass = 1f;
+    private const float HeavyMass = 50f;
+    private const float MassiveMass = 1000f;
 
-    private Rigidbody2D rb;
+    private Rigidbody2D _rb;
 
     public WeightClass CurrentWeightClass => weightClass;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        _rb = GetComponent<Rigidbody2D>();
         if (autoConfigureRigidbody)
         {
             ConfigureRigidbody();
@@ -29,8 +28,8 @@ public class WeightGiver : MonoBehaviour
 
     private void OnValidate()
     {
-        if (rb == null) rb = GetComponent<Rigidbody2D>();
-        if (autoConfigureRigidbody && rb != null)
+        if (_rb == null) _rb = GetComponent<Rigidbody2D>();
+        if (autoConfigureRigidbody && _rb != null)
         {
             ConfigureRigidbody();
         }
@@ -41,24 +40,24 @@ public class WeightGiver : MonoBehaviour
         switch (weightClass)
         {
             case WeightClass.Negative:
-                rb.mass = lightMass;
-                rb.gravityScale = -0.5f; // Floats up in air
+                _rb.mass = LightMass;
+                _rb.gravityScale = -0.5f; // Floats up in air
                 break;
             case WeightClass.Light:
-                rb.mass = lightMass;
-                rb.gravityScale = 0.5f; // Falls slowly
+                _rb.mass = LightMass;
+                _rb.gravityScale = 0.5f; // Falls slowly
                 break;
             case WeightClass.Medium:
-                rb.mass = mediumMass;
-                rb.gravityScale = 1f;
+                _rb.mass = MediumMass;
+                _rb.gravityScale = 1f;
                 break;
             case WeightClass.Heavy:
-                rb.mass = heavyMass;
-                rb.gravityScale = 2f; // Falls fast
+                _rb.mass = HeavyMass;
+                _rb.gravityScale = 2f; // Falls fast
                 break;
             case WeightClass.Massive:
-                rb.bodyType = RigidbodyType2D.Kinematic; // Unmovable by physics
-                rb.mass = massiveMass;
+                _rb.bodyType = RigidbodyType2D.Kinematic; // Unmovable by physics
+                _rb.mass = MassiveMass;
                 break;
         }
     }
@@ -69,7 +68,7 @@ public class WeightGiver : MonoBehaviour
     public float GetEffectiveWeight()
     {
         // Absolute value ensures negative gravity (balloons) still registers pressure if forced down
-        return Mathf.Abs(rb.mass * Physics2D.gravity.y * rb.gravityScale);
+        return Mathf.Abs(_rb.mass * Physics2D.gravity.y * _rb.gravityScale);
     }
 
     /// <summary>
@@ -83,12 +82,12 @@ public class WeightGiver : MonoBehaviour
 
         // If this object is held by the player, it shouldn't weigh down the plate directly
         // (The player's weight plus the held object should count, but that depends on Player implementation)
-        if (rb.bodyType == RigidbodyType2D.Kinematic && weightClass != WeightClass.Massive) return 0f;
+        if (_rb.bodyType == RigidbodyType2D.Kinematic && weightClass != WeightClass.Massive) return 0f;
 
         float totalWeight = GetEffectiveWeight();
 
         List<ContactPoint2D> contacts = new List<ContactPoint2D>();
-        rb.GetContacts(contacts);
+        _rb.GetContacts(contacts);
 
         HashSet<GameObject> processedNeighbors = new HashSet<GameObject>();
 
