@@ -96,13 +96,21 @@ public class PlayerSwimState : PlayerState
         {
             _currentStamina -= Time.fixedDeltaTime;
         }
-        else
+        // Only recover stamina if not diving AND at the surface (top of player is out of water)
+        else if (IsSurfaced())
         {
-            // Recover stamina if not diving (or floating on surface)
             _currentStamina += CurrentStats.swimStaminaRecoveryRate * Time.fixedDeltaTime;
         }
 
         _currentStamina = Mathf.Clamp(_currentStamina, 0, CurrentStats.maxSwimStamina);
+    }
+
+    private bool IsSurfaced()
+    {
+        // Check if the top point of the collider is NOT overlapping with water
+        // This assumes IsInWater() (center check) is already true
+        Vector2 topPoint = new Vector2(col.bounds.center.x, col.bounds.max.y);
+        return !Physics2D.OverlapPoint(topPoint, CurrentStats.waterLayer);
     }
 
     private void HandleStaminaVisuals()
