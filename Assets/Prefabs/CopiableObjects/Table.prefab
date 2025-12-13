@@ -161,6 +161,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2899488444961955534}
   - component: {fileID: 3865467994165523768}
+  - component: {fileID: 148250356560785227}
+  - component: {fileID: 2033018615333806655}
   m_Layer: 7
   m_Name: Table
   m_TagString: Untagged
@@ -230,6 +232,47 @@ MonoBehaviour:
         m_CallState: 2
   isCopy: 0
   col: {fileID: 5200122223554367972}
+--- !u!50 &148250356560785227
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7540910600878810651}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 5
+--- !u!114 &2033018615333806655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7540910600878810651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04455d9344da4944a08842c2cdb86f19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeightGiver
+  weightClass: 2
+  autoConfigureRigidbody: 1
 --- !u!1 &8360060037578909949
 GameObject:
   m_ObjectHideFlags: 0

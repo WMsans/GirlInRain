@@ -14,10 +14,8 @@ public class GrabController : MonoBehaviour
 
     private void Update()
     {
-        // Only allow grabbing if we are currently in the Normal State
         if (player.stateMachine.CurrentState is PlayerNormalState)
         {
-            // Use DashDown (mapped to Sprint) for grabbing
             if (GameInputManager.Instance.CurrentFrameInput.DashDown)
             {
                 AttemptGrab();
@@ -31,18 +29,15 @@ public class GrabController : MonoBehaviour
         Vector2 playerPos = player.transform.position;
         Vector2 dir = (mousePos - playerPos).normalized;
 
-        // Check for objects in the direction of the mouse
         RaycastHit2D hit = Physics2D.Raycast(playerPos, dir, grabRadius, grabLayer);
 
         if (hit.collider != null)
         {
             GrabbableObject grabbable = hit.collider.GetComponent<GrabbableObject>();
-            if (grabbable != null)
+            // ADDED: Check if the object allows grabbing based on weight
+            if (grabbable != null && grabbable.CanBeGrabbed())
             {
-                // Initialize the state with the object and hold point
                 grabState.Initialize(grabbable, holdPoint);
-                
-                // Force state change
                 player.stateMachine.ChangeState(grabState);
             }
         }

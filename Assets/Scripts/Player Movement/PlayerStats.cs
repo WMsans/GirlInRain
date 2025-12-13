@@ -4,6 +4,9 @@ using UnityEngine.Serialization;
 [CreateAssetMenu(fileName = "New Player Stats", menuName = "Custom Assets/Player Controller/Player Stats", order = 1)]
 public class PlayerStats : ScriptableObjectSingleton<PlayerStats>
 {
+    [Header("GENERAL")]
+    public WeightClass playerWeightClass = WeightClass.Medium;
+    
     [FormerlySerializedAs("GroundLayer")] [Header("LAYERS")] [Tooltip("Set this to the layer your player is collided on")]
     public LayerMask groundLayer;
 
@@ -56,4 +59,42 @@ public class PlayerStats : ScriptableObjectSingleton<PlayerStats>
     public float wallJumpForceHorizontalBase = 10f; // Horizontal force when jumping with no directional input
     public float wallJumpForceHorizontalWithInput = 12f; // Horizontal force when jumping with directional input (towards or away)
     public float wallJumpInputLeeway = 0.1f; // Small time window to allow input slightly before/after jump press for bonus force
+    
+    [Header("SWIMMING")]
+    [Tooltip("Layer mask for detecting water")]
+    public LayerMask waterLayer;
+
+    [Tooltip("Horizontal speed while swimming")]
+    public float swimSpeed = 6f;
+
+    [Tooltip("Horizontal acceleration in water")]
+    public float swimAcceleration = 20f;
+
+    [Tooltip("Horizontal deceleration in water")]
+    public float swimDeceleration = 15f;
+
+    [Tooltip("Natural buoyancy speed (floating up to surface)")]
+    public float swimRiseSpeed = 5f;
+
+    [Tooltip("Speed when diving down manually")]
+    public float swimDiveSpeed = 6f;
+
+    [Tooltip("Force applied when jumping out of water")]
+    public float swimJumpPower = 25f;
+
+    [Header("SWIM DURABILITY")]
+    [Tooltip("Total time (seconds) player can swim downwards")]
+    public float maxSwimStamina = 3f;
+
+    [Tooltip("Rate at which stamina recovers when not diving")]
+    public float swimStaminaRecoveryRate = 1.5f;
+
+    [Tooltip("Stamina level (0-1) at which the player starts flashing red")]
+    public float staminaFlashThreshold = 0.25f;
+
+    [Tooltip("Color to flash when running out of stamina")]
+    public Color lowStaminaColor = Color.red;
+
+    [Tooltip("Speed of the warning flash")]
+    public float flashFrequency = 10f;
 }

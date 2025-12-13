@@ -584,28 +584,29 @@ PlayerSettings:
   webWasm2023: 0
   webEnableSubmoduleStrippingCompatibility: 0
   scriptingDefineSymbols:
-    Android: DOTWEEN
+    Android: DOTWEEN;GAME_2D_WATER_KIT_URP
     EmbeddedLinux: DOTWEEN
     GameCoreScarlett: DOTWEEN
     GameCoreXboxOne: DOTWEEN
     Kepler: DOTWEEN
     LinuxHeadlessSimulation: DOTWEEN
-    Nintendo Switch: DOTWEEN
+    Nintendo Switch: DOTWEEN;GAME_2D_WATER_KIT_URP
     Nintendo Switch 2: DOTWEEN
-    PS4: DOTWEEN
-    PS5: DOTWEEN
+    PS4: DOTWEEN;GAME_2D_WATER_KIT_URP
+    PS5: DOTWEEN;GAME_2D_WATER_KIT_URP
     QNX: DOTWEEN
-    Standalone: GASKELLGAMES;GASKELLGAMES_FOLDERSYSTEM;DOTWEEN
+    Standalone: GASKELLGAMES;GASKELLGAMES_FOLDERSYSTEM;DOTWEEN;GAME_2D_WATER_KIT_URP
     VisionOS: DOTWEEN
-    WebGL: DOTWEEN
-    Windows Store Apps: DOTWEEN
-    XboxOne: DOTWEEN
-    iPhone: DOTWEEN
-    tvOS: DOTWEEN
+    WebGL: DOTWEEN;GAME_2D_WATER_KIT_URP
+    Windows Store Apps: DOTWEEN;GAME_2D_WATER_KIT_URP
+    XboxOne: DOTWEEN;GAME_2D_WATER_KIT_URP
+    iPhone: DOTWEEN;GAME_2D_WATER_KIT_URP
+    tvOS: DOTWEEN;GAME_2D_WATER_KIT_URP
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
     Android: 1
+    Standalone: 0
   il2cppCompilerConfiguration: {}
   il2cppCodeGeneration: {}
   il2cppStacktraceInformation: {}
@@ -710,7 +711,7 @@ PlayerSettings:
   hmiLoadingImage: {fileID: 0}
   platformRequiresReadableAssets: 0
   virtualTexturingSupportEnabled: 0
-  insecureHttpOption: 0
+  insecureHttpOption: 1
   androidVulkanDenyFilterList: []
   androidVulkanAllowFilterList: []
   androidVulkanDeviceFilterListAsset: {fileID: 0}

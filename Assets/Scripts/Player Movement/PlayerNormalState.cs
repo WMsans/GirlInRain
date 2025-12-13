@@ -13,14 +13,17 @@ public class PlayerNormalState : PlayerState
     private float _lastWallDirection; // Stores the direction of the wall jumped from (-1 or 1)
     private float _wallJumpLockoutEndTime; // Time when the input lockout after a wall jump ends
     private float _lastWallJumpDirection; // Stores the direction of the wall jumped from (-1 or 1)
-
+    
+    [Header("Swim state")]
+    [SerializeField] private PlayerState swimState;
+    
     public override void OnEnter(StateMachineRunner runner)
     {
         base.OnEnter(runner);
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
         InitalizeJumpVariables();
         CheckJumpOnEnter();
-        CheckCollisions();
+        CheckCollisions(runner);
     }
 
     private void InitalizeJumpVariables()
@@ -65,7 +68,7 @@ public class PlayerNormalState : PlayerState
     
     public override void OnFixedUpdate(StateMachineRunner runner)
     {
-        CheckCollisions();
+        CheckCollisions(runner);
         
         HandleDirection();
         HandleGravity();
@@ -76,7 +79,7 @@ public class PlayerNormalState : PlayerState
     private float GetFrameLeftGrounded() => PlayerController.Instance.FrameLeftGrounded;
     private bool _grounded;
 
-    private void CheckCollisions()
+    private void CheckCollisions(StateMachineRunner runner)
     {
         Physics2D.queriesStartInColliders = false;
 
@@ -132,7 +135,12 @@ public class PlayerNormalState : PlayerState
         {
             _isWallSliding = false;
         }
-
+        
+        bool inWater = Physics2D.OverlapBox(col.bounds.center, col.bounds.size * 0.5f, 0, stats.waterLayer);
+        if (inWater)
+        {
+            runner.ChangeState(swimState);
+        }
 
         Physics2D.queriesStartInColliders = _cachedQueryStartInColliders;
     }

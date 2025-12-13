@@ -36,3 +36,17 @@ MonoBehaviour:
   wallJumpForceHorizontalBase: 14
   wallJumpForceHorizontalWithInput: 18
   wallJumpInputLeeway: 0.1
+  waterLayer:
+    serializedVersion: 2
+    m_Bits: 16
+  swimSpeed: 6
+  swimAcceleration: 20
+  swimDeceleration: 15
+  swimRiseSpeed: 5
+  swimDiveSpeed: 6
+  swimJumpPower: 25
+  maxSwimStamina: 3
+  swimStaminaRecoveryRate: 1.5
+  staminaFlashThreshold: 0.25
+  lowStaminaColor: {r: 1, g: 0, b: 0, a: 1}
+  flashFrequency: 10
