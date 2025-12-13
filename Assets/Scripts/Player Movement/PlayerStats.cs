@@ -4,6 +4,9 @@ using UnityEngine.Serialization;
 [CreateAssetMenu(fileName = "New Player Stats", menuName = "Custom Assets/Player Controller/Player Stats", order = 1)]
 public class PlayerStats : ScriptableObjectSingleton<PlayerStats>
 {
+    [Header("GENERAL")]
+    public WeightClass playerWeightClass = WeightClass.Medium;
+    
     [FormerlySerializedAs("GroundLayer")] [Header("LAYERS")] [Tooltip("Set this to the layer your player is collided on")]
     public LayerMask groundLayer;
 
