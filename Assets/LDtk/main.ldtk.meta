@@ -34,3 +34,6 @@ ScriptedImporter:
   _enumGenerate: 0
   _enumPath: 
   _enumNamespace: 
+  _layerSortingOrders:
+  - Layer: Collision
+    Order: 10

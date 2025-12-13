@@ -57,6 +57,11 @@ namespace LDtkUnity.Editor
             text = "Scale Entities",
             tooltip = "Apply a scale factor to entity prefab instances if they were resized in LDtk."
         };
+        private static readonly GUIContent LayerSortingOrders = new GUIContent
+        {
+            text = "Layer Sorting Orders",
+            tooltip = "Custom sorting orders for specific layers. If a layer is not defined here, it will automatically decrement starting from 0."
+        };
         
         protected override string GuiText => "Main";
         protected override string GuiTooltip => "This is the importer menu.\n" +
@@ -107,6 +112,8 @@ namespace LDtkUnity.Editor
             DrawField(CreateLevelBoundsTrigger, LDtkProjectImporter.CREATE_LEVEL_BOUNDS_TRIGGER);
             DrawField(UseParallax, LDtkProjectImporter.USE_PARALLAX);
             DrawField(ScaleEntities, LDtkProjectImporter.SCALE_ENTITIES);
+            
+            SerializedProperty layerOrders = DrawField(LayerSortingOrders, LDtkProjectImporter.LAYER_SORTING_ORDERS); 
 
             Editor.DrawDependenciesProperty();
         }
