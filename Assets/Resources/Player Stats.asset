@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a6e5dbc1d9b8c9b998f16e76146e9ff, type: 3}
   m_Name: Player Stats
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  playerWeightClass: 2
   groundLayer:
     serializedVersion: 2
     m_Bits: 136
@@ -40,10 +41,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 16
   swimSpeed: 6
-  swimAcceleration: 20
-  swimDeceleration: 15
-  swimRiseSpeed: 5
-  swimDiveSpeed: 6
+  swimAcceleration: 30
+  swimDeceleration: 45
+  swimRiseSpeed: 1000
+  swimRiseAcceleration: 75
+  swimDiveSpeed: 50
   swimJumpPower: 25
   maxSwimStamina: 3
   swimStaminaRecoveryRate: 1.5
