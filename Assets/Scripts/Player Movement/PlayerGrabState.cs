@@ -5,9 +5,10 @@ using UnityEngine.InputSystem;
 public class PlayerGrabState : PlayerState
 {
     [Header("Holding Settings")]
-    [SerializeField] private PlayerStats customStats; // Assign modified stats here
-
+    [SerializeField] private PlayerStats customStats; 
     [SerializeField] private PlayerState normalState;
+    [SerializeField] private PlayerSwimGrabState swimGrabState; // Added reference
+
     // Use custom stats if assigned, otherwise fallback to default
     private PlayerStats CurrentStats => customStats ? customStats : PlayerStats.Instance;
 
@@ -15,7 +16,7 @@ public class PlayerGrabState : PlayerState
     private Transform _holdPoint;
     private float _timeEntered;
 
-    // Movement Variables (Replicated from PlayerNormalState)
+    // Movement Variables
     private bool _cachedQueryStartInColliders;
     private bool _grounded;
     
@@ -37,9 +38,10 @@ public class PlayerGrabState : PlayerState
     {
         base.OnEnter(runner);
         
+        // Safety check
         if (_currentObject == null)
         {
-            runner.ChangeState(GetComponent<PlayerNormalState>() ?? runner.GetComponentInChildren<PlayerNormalState>() ?? FindFirstObjectByType<PlayerNormalState>());
+            runner.ChangeState(normalState ?? GetComponent<PlayerNormalState>());
             return;
         }
 
@@ -55,11 +57,13 @@ public class PlayerGrabState : PlayerState
 
     public override void OnExit(StateMachineRunner runner)
     {
-        // Fail-safe: if we exit state without throwing, drop the object
+        // Fail-safe: if we exit state without throwing AND the object is still parented to holdPoint, 
+        // it means we didn't pass it to another state (like SwimGrab). So we drop it.
         if (_currentObject != null && _currentObject.transform.parent == _holdPoint)
         {
             _currentObject.Throw(Vector2.zero);
         }
+        
         base.OnExit(runner);
     }
 
@@ -73,7 +77,6 @@ public class PlayerGrabState : PlayerState
             if (frameInput.DashDown) // Press Sprint to Throw
             {
                 ThrowObject();
-                // Find and return to Normal State
                 ReturnToNormalState(runner);
                 return;
             }
@@ -88,7 +91,12 @@ public class PlayerGrabState : PlayerState
 
     public override void OnFixedUpdate(StateMachineRunner runner)
     {
-        CheckCollisions();
+        // Pass runner to CheckCollisions to allow state change
+        CheckCollisions(runner); 
+        
+        // If state changed in CheckCollisions, exit immediately
+        if (runner.CurrentState != this) return;
+
         HandleDirection();
         HandleGravity();
         HandleJump();
@@ -111,8 +119,6 @@ public class PlayerGrabState : PlayerState
         runner.ChangeState(normalState);
     }
 
-    // --- LOGIC REPLICATED FROM PlayerNormalState (Using CurrentStats) ---
-
     private void InitializeJumpVariables()
     {
         _endedJumpEarly = false;
@@ -121,11 +127,21 @@ public class PlayerGrabState : PlayerState
         _canEndJumpEarly = false;
     }
 
-    private void CheckCollisions()
+    private void CheckCollisions(StateMachineRunner runner)
     {
         Physics2D.queriesStartInColliders = false;
         
-        // Ground Check
+        // 1. Water Check (New Integration)
+        bool inWater = Physics2D.OverlapBox(col.bounds.center, col.bounds.size * 0.5f, 0, CurrentStats.waterLayer);
+        if (inWater)
+        {
+            TransitionToSwimGrab(runner);
+            // Restore physics setting before leaving
+            Physics2D.queriesStartInColliders = _cachedQueryStartInColliders;
+            return; 
+        }
+
+        // 2. Ground Check
         bool groundHit = Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0, Vector2.down, CurrentStats.grounderDistance, CurrentStats.groundLayer);
 
         if (!_grounded && groundHit)
@@ -144,6 +160,24 @@ public class PlayerGrabState : PlayerState
         }
 
         Physics2D.queriesStartInColliders = _cachedQueryStartInColliders;
+    }
+
+    private void TransitionToSwimGrab(StateMachineRunner runner)
+    {
+        // Try to find the component if not assigned
+        if (swimGrabState == null)
+            swimGrabState = GetComponent<PlayerSwimGrabState>();
+
+        if (swimGrabState != null)
+        {
+            // Handover the object
+            swimGrabState.Initialize(_currentObject, _holdPoint);
+            
+            // Clear local reference so OnExit doesn't throw it
+            _currentObject = null;
+            
+            runner.ChangeState(swimGrabState);
+        }
     }
 
     private void HandleDirection()

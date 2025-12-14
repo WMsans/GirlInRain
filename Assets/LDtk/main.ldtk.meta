@@ -25,6 +25,8 @@ ScriptedImporter:
   - _key: Collision_2
     _asset: {instanceID: 0}
   _entities:
+  - _key: Stone
+    _asset: {instanceID: 0}
   - _key: Box
     _asset: {fileID: 8224894090505787015, guid: 44c68461798c95b3aba49b3b33ec8157, type: 3}
   - _key: Table
@@ -41,4 +43,4 @@ ScriptedImporter:
   - Layer: Copier
     Order: -2
   - Layer: Collision
-    Order: 5
+    Order: 10

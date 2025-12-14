@@ -6,6 +6,7 @@ public class GrabController : MonoBehaviour
     [Header("References")]
     public PlayerController player;
     public PlayerGrabState grabState;
+    public PlayerSwimGrabState swimGrabState; // Added reference
     public Transform holdPoint;
 
     [Header("Settings")]
@@ -14,7 +15,9 @@ public class GrabController : MonoBehaviour
 
     private void Update()
     {
-        if (player.stateMachine.CurrentState is PlayerNormalState)
+        // Allow grabbing from Normal, Swim, or other neutral states
+        if (player.stateMachine.CurrentState is PlayerNormalState || 
+            player.stateMachine.CurrentState is PlayerSwimState)
         {
             if (GameInputManager.Instance.CurrentFrameInput.DashDown)
             {
@@ -34,13 +37,35 @@ public class GrabController : MonoBehaviour
         if (hit.collider != null)
         {
             GrabbableObject grabbable = hit.collider.GetComponent<GrabbableObject>();
-            // ADDED: Check if the object allows grabbing based on weight
+            
             if (grabbable != null && grabbable.CanBeGrabbed())
             {
-                grabState.Initialize(grabbable, holdPoint);
-                player.stateMachine.ChangeState(grabState);
+                // Logic Check: Are we in water?
+                bool inWater = IsPlayerInWater();
+
+                if (inWater && swimGrabState != null)
+                {
+                    // Switch to Swim Grab
+                    swimGrabState.Initialize(grabbable, holdPoint);
+                    player.stateMachine.ChangeState(swimGrabState);
+                }
+                else if (grabState != null)
+                {
+                    // Switch to Standard Grab
+                    grabState.Initialize(grabbable, holdPoint);
+                    player.stateMachine.ChangeState(grabState);
+                }
             }
         }
+    }
+
+    private bool IsPlayerInWater()
+    {
+        // Reusing the overlap check logic found in other states
+        // Ideally this should be a public property on PlayerController, 
+        // but checking here is safe for now.
+        if (player.stats == null) return false;
+        return Physics2D.OverlapBox(player.col.bounds.center, player.col.bounds.size * 0.8f, 0, player.stats.waterLayer);
     }
 
     private void OnDrawGizmosSelected()

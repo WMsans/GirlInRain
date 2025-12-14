@@ -166,6 +166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GrabController
   player: {fileID: 1285568142}
   grabState: {fileID: 1230586399}
+  swimGrabState: {fileID: 0}
   holdPoint: {fileID: 952381280}
   grabRadius: 1.5
   grabLayer:
@@ -596,10 +597,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeightGiver
   weightClass: 2
   autoConfigureRigidbody: 1
-  lightMass: 0.5
-  mediumMass: 1
-  heavyMass: 50
-  massiveMass: 1000
 --- !u!1001 &452235932
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2985,6 +2982,7 @@ GameObject:
   - component: {fileID: 1230586398}
   - component: {fileID: 1230586399}
   - component: {fileID: 1230586400}
+  - component: {fileID: 1230586401}
   m_Layer: 0
   m_Name: States
   m_TagString: Untagged
@@ -3034,6 +3032,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGrabState
   customStats: {fileID: 11400000, guid: 407fa60587841924f9af8a9cfea8291c, type: 2}
   normalState: {fileID: 1230586398}
+  swimGrabState: {fileID: 1230586401}
 --- !u!114 &1230586400
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3048,6 +3047,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSwimState
   customStats: {fileID: 0}
   spriteRenderer: {fileID: 1285568138}
+--- !u!114 &1230586401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1230586396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4d17283607e4415b1bb37cea1d4f1cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSwimGrabState
+  landGrabState: {fileID: 1230586399}
+  normalSwimState: {fileID: 1230586400}
+  customStats: {fileID: 0}
 --- !u!1 &1285568137
 GameObject:
   m_ObjectHideFlags: 0

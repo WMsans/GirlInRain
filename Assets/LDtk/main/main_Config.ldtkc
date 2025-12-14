@@ -30,6 +30,12 @@
     ],
     "Entities": [
         {
+            "_key": "Stone",
+            "_asset": {
+                "instanceID": 0
+            }
+        },
+        {
             "_key": "Box",
             "_asset": {
                 "fileID": 8224894090505787015,
