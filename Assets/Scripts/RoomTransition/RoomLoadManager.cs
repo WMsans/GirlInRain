@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using LDtkUnity; // Assuming standard namespace, adjust if your generated code differs
+using LDtkUnity; 
 
 public class RoomLoadManager : MonoBehaviour
 {
@@ -8,6 +8,13 @@ public class RoomLoadManager : MonoBehaviour
 
     // Dictionary to look up Level Components by their IID string
     private Dictionary<string, LDtkComponentLevel> _levelRegistry = new Dictionary<string, LDtkComponentLevel>();
+    // Cache level colliders for efficient bounds checking
+    private Dictionary<string, Collider2D> _levelColliders = new Dictionary<string, Collider2D>();
+
+    [Header("Detection Settings")]
+    [SerializeField] private Transform player;
+    
+    private LDtkComponentLevel _currentLevel;
 
     private void Awake()
     {
@@ -22,6 +29,23 @@ public class RoomLoadManager : MonoBehaviour
         RegisterAllLevels();
     }
 
+    private void Start()
+    {
+        // Auto-find player if not assigned
+        if (player == null && PlayerController.Instance != null)
+        {
+            player = PlayerController.Instance.transform;
+        }
+    }
+
+    private void Update()
+    {
+        if (player == null) return;
+        
+        // Actively check which room the player is inside, mirroring CameraController logic
+        CheckActiveRoom();
+    }
+
     private void RegisterAllLevels()
     {
         // Find all levels currently in the scene (since they start active)
@@ -33,7 +57,15 @@ public class RoomLoadManager : MonoBehaviour
             var iidComponent = level.GetComponent<LDtkIid>();
             if (iidComponent != null)
             {
-                _levelRegistry.TryAdd(iidComponent.Iid, level);
+                if (_levelRegistry.TryAdd(iidComponent.Iid, level))
+                {
+                    // Cache the collider for this level
+                    var col = level.GetComponent<Collider2D>();
+                    if (col != null)
+                    {
+                        _levelColliders[iidComponent.Iid] = col;
+                    }
+                }
             }
             else
             {
@@ -42,8 +74,51 @@ public class RoomLoadManager : MonoBehaviour
         }
     }
 
+    private void CheckActiveRoom()
+    {
+        LDtkComponentLevel bestLevel = null;
+        float minDistanceSqr = float.MaxValue;
+
+        // Iterate through all registered levels to find the best fit
+        foreach (var kvp in _levelRegistry)
+        {
+            string iid = kvp.Key;
+            LDtkComponentLevel level = kvp.Value;
+
+            // Skip if level or its collider is invalid
+            // Note: We check activeInHierarchy because generally we only want to transition 
+            // to levels that are already loaded (neighbors).
+            if (level == null || !level.gameObject.activeInHierarchy) 
+                continue;
+
+            if (_levelColliders.TryGetValue(iid, out Collider2D col) && col != null && col.enabled)
+            {
+                // Check if player is inside the bounds
+                if (col.bounds.Contains(player.position))
+                {
+                    // Pick the room where the player is closest to the center
+                    float distSqr = (player.position - col.bounds.center).sqrMagnitude;
+                    if (distSqr < minDistanceSqr)
+                    {
+                        minDistanceSqr = distSqr;
+                        bestLevel = level;
+                    }
+                }
+            }
+        }
+
+        // If we found a valid room and it's different from the current one, switch.
+        if (bestLevel != null && bestLevel != _currentLevel)
+        {
+            OnEnterRoom(bestLevel);
+        }
+    }
+
     public void OnEnterRoom(LDtkComponentLevel currentLevel)
     {
+        if (_currentLevel != currentLevel)
+            _currentLevel = currentLevel;
+
         // 1. Identify which rooms should be active (Current + Neighbors)
         HashSet<string> activeIids = new HashSet<string>();
 
