@@ -71,20 +71,22 @@ public class PlayerSwimState : PlayerState
     {
         // Horizontal Movement
         float targetX = frameInput.Move.x * CurrentStats.swimSpeed;
-        float accel = (Mathf.Abs(targetX) > 0.01f) ? CurrentStats.swimAcceleration : CurrentStats.swimDeceleration;
+        float accelX = (Mathf.Abs(targetX) > 0.01f) ? CurrentStats.swimAcceleration : CurrentStats.swimDeceleration;
         
-        float newX = Mathf.MoveTowards(rb.linearVelocity.x, targetX, accel * Time.fixedDeltaTime);
+        float newX = Mathf.MoveTowards(rb.linearVelocity.x, targetX, accelX * Time.fixedDeltaTime);
 
         // Vertical Movement (Buoyancy vs Diving)
         float targetY = CurrentStats.swimRiseSpeed; // Default: Float up
+        float accelY = CurrentStats.swimRiseAcceleration; // [CHANGED] Use dedicated rise acceleration by default
 
         // Dive Logic: Only if input is Down AND we have stamina
         if (frameInput.Move.y < -0.1f && _currentStamina > 0)
         {
             targetY = -CurrentStats.swimDiveSpeed;
+            accelY = CurrentStats.swimAcceleration; // [CHANGED] Use standard acceleration (propulsion) when diving
         }
         
-        float newY = Mathf.MoveTowards(rb.linearVelocity.y, targetY, CurrentStats.swimAcceleration * Time.fixedDeltaTime);
+        float newY = Mathf.MoveTowards(rb.linearVelocity.y, targetY, accelY * Time.fixedDeltaTime);
 
         rb.linearVelocity = new Vector2(newX, newY);
     }

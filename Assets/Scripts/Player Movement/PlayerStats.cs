@@ -75,6 +75,9 @@ public class PlayerStats : ScriptableObjectSingleton<PlayerStats>
 
     [Tooltip("Natural buoyancy speed (floating up to surface)")]
     public float swimRiseSpeed = 5f;
+    
+    [Tooltip("Acceleration applied when floating upwards (Buoyancy strength)")]
+    public float swimRiseAcceleration = 20f; // [ADDED] Separate acceleration for rising
 
     [Tooltip("Speed when diving down manually")]
     public float swimDiveSpeed = 6f;
